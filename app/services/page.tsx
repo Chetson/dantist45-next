@@ -23,27 +23,14 @@ async function Catalog() {
 
   return (
     <div className="container-page space-y-6 pb-8">
-      <nav aria-label="Направления" className="sticky top-24 z-30 -mx-1 overflow-x-auto px-1 py-2 [scrollbar-width:none]">
-        <ul className="flex gap-2 text-sm">
-          {catalog.map((category) => (
-            <li key={category.id}>
-              <a
-                href={`#${category.slug}`}
-                className="block rounded-full bg-white/90 px-5 py-2.5 whitespace-nowrap text-brand-deep shadow-sm ring-1 ring-white transition-colors hover:bg-brand hover:text-white"
-              >
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {/* Навигация по направлениям — вторая строка шапки (слот @subnav). */}
 
       {catalog.map((category) => (
         <section
           key={category.id}
           id={category.slug}
           aria-labelledby={`${category.slug}-title`}
-          className="card card-pad grid grid-cols-12 gap-x-6 gap-y-8 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8"
+          className="card card-pad scroll-mt-12 grid grid-cols-12 gap-x-6 gap-y-8 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8"
         >
           <div>
             <span className={`${iconCircle} size-14`}>

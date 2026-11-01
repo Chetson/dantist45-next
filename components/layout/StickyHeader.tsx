@@ -24,12 +24,10 @@ export function StickyHeader({ children }: { children: ReactNode }) {
     <>
       {/* Датчик в самом верху body: пока он виден, шапка — «плавающая пилюля». */}
       <div ref={sentinel} aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-8" />
-      {/* Высота шапки постоянная (отступ сверху + пилюля), поэтому контент
-          страницы не прыгает, когда пилюля поднимается и растягивается. */}
-      <header
-        data-scrolled={scrolled}
-        className="group/header pointer-events-none sticky top-0 z-40 h-[4.75rem] sm:h-[5.5rem]"
-      >
+      {/* Шапка прозрачна для кликов — кликабельна только сама пилюля. Пилюля
+          поднимается к верху экрана через transform, а не через отступы:
+          высота шапки в потоке не меняется, и контент страницы не прыгает. */}
+      <header data-scrolled={scrolled} className="group/header pointer-events-none sticky top-0 z-40">
         {children}
       </header>
     </>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Menu, Phone } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { buttonClass, iconCircle } from "@/components/ui/button";
 import { ToothIcon } from "@/components/ui/icons";
 import { getClinics } from "@/lib/data/site";
@@ -47,7 +47,8 @@ export function Logo({ inverted }: { inverted?: boolean }) {
   );
 }
 
-export function Header() {
+/** subnav — необязательная вторая строка шапки (слот @subnav в layout). */
+export function Header({ subnav }: { subnav?: ReactNode }) {
   return (
     <StickyHeader>
       {/* В покое шапка — «пилюля» на краях сетки страницы. При прокрутке обёртка
@@ -55,7 +56,7 @@ export function Header() {
           растягивается на всю ширину экрана. Строка с содержимым всегда остаётся
           в границах сетки (76rem), поэтому логотип и телефон не смещаются.
           Поля строки равны отступу круга логотипа сверху и снизу. */}
-      <div className="mx-auto max-w-[80rem] px-5 pt-3 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[scrolled=true]/header:max-w-full group-data-[scrolled=true]/header:px-0 group-data-[scrolled=true]/header:pt-0 motion-reduce:transition-none sm:px-8 sm:pt-4">
+      <div className="mx-auto max-w-[80rem] px-5 pt-3 transition-[max-width,padding,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[scrolled=true]/header:max-w-full group-data-[scrolled=true]/header:-translate-y-3 group-data-[scrolled=true]/header:px-0 motion-reduce:transition-none sm:px-8 sm:pt-4 sm:group-data-[scrolled=true]/header:-translate-y-4">
         <div className="pointer-events-auto rounded-[2rem] bg-white/90 shadow-[0_16px_40px_-24px_rgba(59,73,93,0.45)] ring-1 ring-white backdrop-blur transition-[border-radius,padding,box-shadow,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[scrolled=true]/header:rounded-none group-data-[scrolled=true]/header:bg-white/85 group-data-[scrolled=true]/header:px-5 group-data-[scrolled=true]/header:shadow-[0_1px_0_0_rgba(225,231,241,1),0_14px_32px_-24px_rgba(59,73,93,0.5)] group-data-[scrolled=true]/header:ring-0 motion-reduce:transition-none sm:rounded-[2.25rem] sm:group-data-[scrolled=true]/header:px-8">
           <div className="mx-auto flex h-16 max-w-[76rem] items-center justify-between gap-6 pr-2.5 pl-3 sm:h-[4.5rem] sm:px-4">
             <Logo />
@@ -113,6 +114,7 @@ export function Header() {
               </details>
             </div>
           </div>
+          {subnav && <div className="mx-auto max-w-[76rem] pr-2.5 pl-3 sm:px-4">{subnav}</div>}
         </div>
       </div>
     </StickyHeader>

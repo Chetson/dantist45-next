@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children, subnav }: LayoutProps<"/">) {
   return (
     <html
       lang="ru"
@@ -54,7 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Перейти к содержимому
         </a>
-        <Header />
+        <Header subnav={subnav} />
         <main id="content" className="flex-1">
           {children}
         </main>
