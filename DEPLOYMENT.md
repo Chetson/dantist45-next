@@ -34,6 +34,7 @@ cp .env.example .env
 | `POSTGRES_DB` | `dantist45` | Имя БД |
 | `POSTGRES_PORT` | `5432` | Порт БД на хосте (слушает только `127.0.0.1`) |
 | `DATABASE_URL` | `postgresql://dantist:dantist@localhost:5432/dantist45?schema=public` | Только для разработки на хосте (`npm run dev`, Prisma CLI). Должен совпадать с `POSTGRES_*`. Контейнеры собирают свой адрес сами |
+| `SITE_URL` | `https://dantist45.ru` | Публичный адрес сайта: canonical-ссылки, `sitemap.xml`, `robots.txt` |
 | `APP_PORT` | `3000` | Порт сайта на хосте |
 | `APP_BIND` | `127.0.0.1` | `127.0.0.1` — сайт виден только локально и через Caddy; `0.0.0.0` — открыть порт наружу без прокси |
 | `DOMAIN` | `localhost` | Домен для Caddy, например `dantist45.ru`; `www.` перенаправляется на него |

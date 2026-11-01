@@ -33,7 +33,9 @@ App Router, строгий TypeScript, псевдоним `@/*` → корень
 - `prisma/schema.prisma` — модель данных; `prisma/seed.ts` + `prisma/seed-data/*` — начальные данные из документов клиники (`TODO(клиника)` — что уточнить).
 - `lib/db.ts` — `getDb()`, ленивый синглтон PrismaClient; `lib/data/*` — серверные функции чтения: `await connection()` снаружи, `'use cache'` + `cacheTag` внутри, вызывающие компоненты — в `<Suspense>`. Сборка не должна обращаться к БД (Docker-образ собирается без неё).
 - Деплой: `Dockerfile` + `docker-compose.yml` (postgres → migrate → app → caddy), инструкция — [DEPLOYMENT.md](DEPLOYMENT.md).
-- `components/layout/*` — Header/Footer; данные берут из БД.
+- `components/layout/*` — Header/Footer; `components/ui/*` — общие элементы (`buttonClass`, `SectionHeading`, `PageHeader`, `Markdown`, иконки); `components/{home,services,staff,clinics}/*` — блоки страниц.
+- Дизайн — по мотивам dentist.madethemes.com: цвета — токены в `app/globals.css` (`brand`, `brand-deep`, `accent`…), заголовки — `font-display` (Playfair Display), текст — Golos Text. Только Tailwind, без отдельных CSS-модулей.
+- Страницы `[slug]` читают `params` внутри `<Suspense>` (без `generateStaticParams` — сборка без БД).
 - На сайте нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9).
 
 Нестандартные настройки в [next.config.ts](next.config.ts):

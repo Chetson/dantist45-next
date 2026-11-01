@@ -52,6 +52,7 @@ services:
     restart: unless-stopped
     environment:
       <<: *database-url
+      SITE_URL: ${SITE_URL:-https://dantist45.ru}
     ports:
       - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}:3000"
     depends_on:

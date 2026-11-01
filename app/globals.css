@@ -1,19 +1,29 @@
 @import "tailwindcss";
 
+/*
+ * Палитра по мотивам dentist.madethemes.com: глубокий морской синий,
+ * бирюзовый акцент, светлые голубые подложки.
+ */
 :root {
   --background: #ffffff;
-  --foreground: #1f2933;
-  --muted: #5f6c7b;
-  --line: #e3e8ee;
+  --foreground: #10293b;
+  --muted: #5a6f80;
+  --line: #dbe7ee;
   --surface: #ffffff;
-  --surface-muted: #f5f8fa;
-  --brand: #0f766e;
-  --brand-strong: #115e59;
-  --brand-soft: #e6f4f2;
-  --warning: #b45309;
-  --warning-soft: #fef3c7;
-  --critical: #b91c1c;
-  --critical-soft: #fee2e2;
+  --surface-muted: #f3f8fb;
+
+  --brand: #0b5279;
+  --brand-strong: #083e5c;
+  --brand-deep: #052d44;
+  --brand-soft: #e5f2f7;
+  --accent: #27b0cf;
+  --accent-strong: #1793b0;
+  --accent-soft: #d8f1f7;
+
+  --warning: #9a4b06;
+  --warning-soft: #fff4dc;
+  --critical: #b42318;
+  --critical-soft: #fde8e7;
 }
 
 @theme inline {
@@ -25,12 +35,17 @@
   --color-surface-muted: var(--surface-muted);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
+  --color-brand-deep: var(--brand-deep);
   --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
   --color-warning: var(--warning);
   --color-warning-soft: var(--warning-soft);
   --color-critical: var(--critical);
   --color-critical-soft: var(--critical-soft);
   --font-sans: var(--font-golos);
+  --font-display: var(--font-playfair);
 }
 
 @utility container-page {
@@ -44,7 +59,25 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  /* У Playfair по умолчанию старостильные цифры — номера лицензий и цены
+     читаются хуже. */
+  .font-display {
+    font-variant-numeric: lining-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
