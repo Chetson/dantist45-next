@@ -8,6 +8,7 @@ import { formatPhone } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Контролирующие органы",
+  alternates: { canonical: "/regulators" },
   description:
     "Адреса и телефоны органов, контролирующих работу стоматологии «Дантист»: Росздравнадзор, Роспотребнадзор, Департамент здравоохранения Курганской области.",
 };

@@ -6,6 +6,7 @@ import { CardGridSkeleton } from "@/components/ui/Skeleton";
 
 export const metadata: Metadata = {
   title: "Филиалы",
+  alternates: { canonical: "/clinics" },
   description: "Адреса, телефоны и режим работы филиалов стоматологии «Дантист» в Кургане.",
 };
 

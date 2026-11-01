@@ -9,6 +9,7 @@ import { getDocuments } from "@/lib/data/content";
 
 export const metadata: Metadata = {
   title: "Пациентам",
+  alternates: { canonical: "/documents" },
   description:
     "Нормативные документы, образцы договоров и информация для пациентов стоматологии «Дантист».",
 };

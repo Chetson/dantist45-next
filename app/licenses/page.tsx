@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Лицензии",
+  alternates: { canonical: "/licenses" },
   description: "Лицензия ООО «Дантист» на медицинскую деятельность и приложения к ней с перечнем работ и услуг.",
 };
 

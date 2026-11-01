@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {
   title: "Персональные данные",
+  alternates: { canonical: "/privacy" },
   description: "Как сайт стоматологии «Дантист» обращается с персональными данными посетителей.",
 };
 

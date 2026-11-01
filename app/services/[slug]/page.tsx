@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   if (!article) notFound();
   return {
     title: article.title,
+    alternates: { canonical: `/services/${article.slug}` },
     description: article.body.split("\n")[0].slice(0, 160),
   };
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Announcements } from "@/components/home/Announcements";
 import { Hero } from "@/components/home/Hero";
@@ -15,6 +16,12 @@ import {
 } from "@/components/home/Sections";
 import { StructuredData } from "@/components/home/StructuredData";
 import { CardGridSkeleton } from "@/components/ui/Skeleton";
+
+// Canonical задаётся на каждой странице отдельно: в корневом layout он
+// унаследовался бы всеми страницами.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // Порядок блоков — refactor-plan.md, раздел 3; оформление — по макету
 // «Dental Clinic» (Behance). Статичные части попадают в пререндер,

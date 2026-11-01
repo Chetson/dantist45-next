@@ -11,6 +11,7 @@ import { getServiceCatalog } from "@/lib/data/content";
 
 export const metadata: Metadata = {
   title: "Услуги и цены",
+  alternates: { canonical: "/services" },
   description:
     "Стоматологические услуги и цены клиники «Дантист» в Кургане: терапия, хирургия, ортопедия, гигиена.",
 };

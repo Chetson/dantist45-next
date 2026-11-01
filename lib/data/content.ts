@@ -42,7 +42,7 @@ async function loadServiceCatalog() {
       articles: {
         where: { isPublished: true },
         orderBy: { sortOrder: "asc" },
-        select: { slug: true, title: true },
+        select: { slug: true, title: true, updatedAt: true },
       },
     },
   });

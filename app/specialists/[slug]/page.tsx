@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/specialists/[slug
   if (!person) notFound();
   return {
     title: `${fullName(person)} — ${person.specialties}`,
+    alternates: { canonical: `/specialists/${person.slug}` },
     description: `Образование, квалификация и аккредитация: ${fullName(person)}, ${person.specialties}.`,
   };
 }

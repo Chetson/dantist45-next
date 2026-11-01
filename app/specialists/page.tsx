@@ -8,6 +8,7 @@ import { getClinics } from "@/lib/data/site";
 
 export const metadata: Metadata = {
   title: "Специалисты",
+  alternates: { canonical: "/specialists" },
   description:
     "Врачи, зубные врачи и медицинские сёстры стоматологии «Дантист»: образование, квалификация, аккредитация.",
 };

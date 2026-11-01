@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: PageProps<"/clinics/[slug]">)
   if (!clinic) notFound();
   return {
     title: clinic.name,
+    alternates: { canonical: `/clinics/${clinic.slug}` },
     description: `${clinic.name} стоматологии «Дантист»: ${clinic.address}. Телефоны, режим работы, специалисты.`,
   };
 }
