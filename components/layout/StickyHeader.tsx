@@ -27,7 +27,13 @@ export function StickyHeader({ children }: { children: ReactNode }) {
       {/* Шапка прозрачна для кликов — кликабельна только сама пилюля. Пилюля
           поднимается к верху экрана через transform, а не через отступы:
           высота шапки в потоке не меняется, и контент страницы не прыгает. */}
-      <header data-scrolled={scrolled} className="group/header pointer-events-none sticky top-0 z-40">
+      <header
+        data-scrolled={scrolled}
+        // Своё имя в View Transitions: при смене страниц шапка не анимируется
+        // и остаётся неподвижной точкой опоры (см. app/globals.css).
+        style={{ viewTransitionName: "site-header" }}
+        className="group/header pointer-events-none sticky top-0 z-40"
+      >
         {children}
       </header>
     </>
