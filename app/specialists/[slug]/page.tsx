@@ -43,12 +43,12 @@ async function Profile({ slug }: { slug: string }) {
         keepCase
         lead={<span className="first-letter:uppercase">{person.specialties}</span>}
       />
-      <div className="container-page grid gap-10 py-14 lg:grid-cols-[18rem_1fr]">
-        <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-          <StaffAvatar person={person} className="aspect-square w-full max-w-72 text-7xl" />
+      <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8">
+        <aside className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-6 lg:sticky lg:top-28 lg:grid-cols-1 lg:self-start">
+          <StaffAvatar person={person} className="aspect-square w-32 text-4xl sm:w-44 sm:text-5xl lg:w-full lg:max-w-72 lg:text-7xl" />
           <ul className="space-y-3">
             {person.clinics.map(({ clinic, position }) => (
-              <li key={clinic.slug} className="card rounded-[1.75rem] p-4">
+              <li key={clinic.slug} className="card card-pad-sm rounded-[1.75rem]">
                 <Link href={`/clinics/${clinic.slug}`} className="flex items-center gap-2 font-medium text-brand hover:underline">
                   <MapPin className="size-4 text-brand" aria-hidden="true" />
                   {clinic.name}
@@ -66,13 +66,13 @@ async function Profile({ slug }: { slug: string }) {
             const { title, icon: Icon } = docTypes[type];
             return (
               <section key={type} aria-labelledby={`docs-${type}`}>
-                <h2 id={`docs-${type}`} className="mb-4 flex items-center gap-3 font-display text-2xl text-brand-deep font-extrabold tracking-tight">
+                <h2 id={`docs-${type}`} className="type-h3 mb-5 flex items-center gap-3 text-brand-deep">
                   <Icon className="size-6 text-brand" aria-hidden="true" />
                   {title}
                 </h2>
                 <ul className="space-y-3">
                   {docs.map((doc) => (
-                    <li key={doc.id} className="card rounded-[1.75rem] p-5">
+                    <li key={doc.id} className="card card-pad-sm rounded-[1.75rem]">
                       {doc.organization && <p className="font-medium">{doc.organization}</p>}
                       <dl className="mt-2 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
                         {doc.specialty && (
@@ -124,7 +124,7 @@ export default function SpecialistPage({ params }: PageProps<"/specialists/[slug
       fallback={
         <>
           <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
-          <div className="container-page grid gap-10 py-14 lg:grid-cols-[18rem_1fr]">
+          <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8">
             <Skeleton className="aspect-square" />
             <Skeleton className="h-96" />
           </div>

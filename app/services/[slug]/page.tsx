@@ -32,13 +32,13 @@ async function Article({ slug }: { slug: string }) {
         current={article.title}
         keepCase
       />
-      <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_20rem]">
+      <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-8 lg:[&>*:last-child]:col-span-4">
         <article className="min-w-0">
           <Markdown>{article.body}</Markdown>
 
           {category && (
             <section className="mt-12" aria-labelledby="prices-title">
-              <h2 id="prices-title" className="mb-5 font-display text-2xl text-brand-deep font-extrabold tracking-tight">
+              <h2 id="prices-title" className="type-h3 mb-6 text-brand-deep">
                 Цены: {category.name.toLowerCase()}
               </h2>
               <PriceTable services={category.services} caption={`Цены: ${category.name}`} />
@@ -52,7 +52,7 @@ async function Article({ slug }: { slug: string }) {
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
           {category && category.articles.length > 1 && (
             <nav aria-label="Другие услуги направления" className="card p-6">
-              <h2 className="mb-3 font-display text-lg text-brand-deep font-extrabold tracking-tight">{category.name}</h2>
+              <h2 className="type-h4 mb-4 text-brand-deep">{category.name}</h2>
               <ul className="space-y-1">
                 {category.articles.map((item) => (
                   <li key={item.slug}>
@@ -69,7 +69,7 @@ async function Article({ slug }: { slug: string }) {
             </nav>
           )}
           <div className="bg-sky-panel rounded-[var(--radius-panel)] p-6 text-white shadow-lg shadow-accent-strong/30">
-            <h2 className="font-display text-xl font-extrabold tracking-tight">Нужна консультация?</h2>
+            <h2 className="type-h4">Нужна консультация?</h2>
             <p className="mt-2 text-sm text-white/75">
               Позвоните в удобный филиал — администратор подберёт время приёма.
             </p>
@@ -90,7 +90,7 @@ export default function ServiceArticlePage({ params }: PageProps<"/services/[slu
       fallback={
         <>
           <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
-          <div className="container-page space-y-4 py-14">
+          <div className="container-page space-y-4">
             <Skeleton className="h-6 w-2/3" />
             <Skeleton className="h-40" />
           </div>

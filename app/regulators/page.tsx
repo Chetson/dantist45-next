@@ -15,16 +15,16 @@ export const metadata: Metadata = {
 async function Regulators() {
   const regulators = await getRegulators();
   return (
-    <ul className="grid gap-6 lg:grid-cols-3">
+    <ul className="grid gap-4 sm:gap-6 lg:grid-cols-3">
       {regulators.map((r) => (
-        <li key={r.id} className="flex flex-col card p-7">
+        <li key={r.id} className="card card-pad flex flex-col">
           <span className="flex size-12 items-center justify-center rounded-full bg-brand text-white glow">
             <Landmark className="size-6" aria-hidden="true" />
           </span>
-          <h2 className="mt-5 font-display text-2xl text-brand-deep font-extrabold tracking-tight">{r.shortName}</h2>
+          <h2 className="mt-5 type-h3 text-brand-deep">{r.shortName}</h2>
           <p className="mt-2 text-sm text-muted">{r.name}</p>
           {r.description && <p className="mt-4 rounded-2xl bg-brand-soft px-4 py-3 text-sm">{r.description}</p>}
-          <ul className="mt-5 space-y-3 text-[15px]">
+          <ul className="mt-5 space-y-3">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
               {r.address}
@@ -112,9 +112,9 @@ export default function RegulatorsPage() {
         current="Контролирующие органы"
         lead="Если вы считаете, что при оказании медицинской помощи были нарушены ваши права, вы можете обратиться в органы, контролирующие работу клиники."
       />
-      <div className="container-page space-y-14 py-14">
-        <section aria-labelledby="steps-title" className="card p-7 sm:p-10">
-          <h2 id="steps-title" className="font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
+      <div className="container-page space-y-14 sm:space-y-20">
+        <section aria-labelledby="steps-title" className="card card-pad">
+          <h2 id="steps-title" className="type-h3 text-brand-deep">
             Как защитить свои права
           </h2>
           <ol className="mt-8 grid gap-6 md:grid-cols-3">

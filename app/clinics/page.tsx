@@ -17,7 +17,7 @@ export default function ClinicsPage() {
         current="Филиалы"
         lead="Запись на приём — по телефону филиала. Сайт не принимает заявки и не собирает персональные данные."
       />
-      <div className="container-page py-14">
+      <div className="container-page">
         <Suspense fallback={<CardGridSkeleton count={2} className="h-96" />}>
           <ClinicsGrid />
         </Suspense>

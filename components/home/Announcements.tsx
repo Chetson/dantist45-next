@@ -25,28 +25,28 @@ export async function Announcements() {
   if (announcements.length === 0) return null;
 
   return (
-    <section aria-labelledby="announcements-title" className="container-page pt-6">
+    <section aria-labelledby="announcements-title" className="container-page pt-4 sm:pt-6">
       <h2 id="announcements-title" className="sr-only">
         Важные уведомления
       </h2>
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {announcements.map((a) => {
           const level = levels[a.level];
           const Icon = level.icon;
           return (
             <article
               key={a.id}
-              className={`card flex gap-5 p-7 ${level.ring} ${announcements.length === 1 ? "lg:col-span-2" : ""}`}
+              className={`card card-pad flex flex-col gap-4 sm:flex-row sm:gap-5 ${level.ring} ${announcements.length === 1 ? "lg:col-span-2" : ""}`}
             >
               <span className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white ${level.circle}`}>
                 <Icon className="size-5" aria-hidden="true" />
               </span>
-              <div className="min-w-0 text-[15px] text-foreground/85">
-                <p className="text-xs font-semibold tracking-wide text-muted uppercase">
+              <div className="min-w-0 text-foreground/85">
+                <p className="type-eyebrow text-muted">
                   {level.label}
                   {a.clinics.length > 0 && ` · ${a.clinics.map((c) => c.name).join(", ")}`}
                 </p>
-                <h3 className="mt-1 mb-2 font-display text-xl font-extrabold tracking-tight text-brand-deep">
+                <h3 className="type-h4 mt-2 mb-3 text-brand-deep">
                   {a.title}
                 </h3>
                 <Markdown compact>{a.body}</Markdown>

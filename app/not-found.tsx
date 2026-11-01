@@ -10,8 +10,8 @@ export default function NotFound() {
       <span className="flex size-20 items-center justify-center rounded-full bg-brand text-white glow">
         <ToothIcon className="size-10" />
       </span>
-      <p className="mt-8 font-display text-6xl text-brand font-extrabold tracking-tight">404</p>
-      <h1 className="mt-3 font-display text-3xl text-brand-deep font-extrabold tracking-tight">Страница не найдена</h1>
+      <p className="mt-8 font-display text-7xl leading-none font-extrabold tracking-tight text-brand">404</p>
+      <h1 className="mt-3 type-h2 text-brand-deep normal-case">Страница не найдена</h1>
       <p className="mt-4 max-w-md text-muted">
         Возможно, страница была перемещена или вы ошиблись в адресе. Воспользуйтесь разделами сайта:
       </p>

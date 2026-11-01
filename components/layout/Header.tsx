@@ -36,7 +36,7 @@ export function Logo({ inverted }: { inverted?: boolean }) {
         >
           дантист
         </span>
-        <span className={`mt-0.5 text-[11px] ${inverted ? "text-white/70" : "text-muted"}`}>
+        <span className={`mt-1 text-xs leading-none ${inverted ? "text-white/70" : "text-muted"}`}>
           стоматология · Курган
         </span>
       </span>
@@ -46,61 +46,64 @@ export function Logo({ inverted }: { inverted?: boolean }) {
 
 export function Header() {
   return (
-    <header className="sticky top-3 z-40 px-3 pt-3 sm:px-4">
-      <div className="mx-auto flex h-16 max-w-[82rem] items-center justify-between gap-6 rounded-full bg-white/90 pr-3 pl-4 shadow-[0_16px_40px_-24px_rgba(59,73,93,0.45)] ring-1 ring-white backdrop-blur sm:pr-4 sm:pl-6">
-        <Logo />
+    <header className="sticky top-0 z-40 pt-3 sm:pt-4">
+      {/* Края «пилюли» совпадают с краями сетки страницы. */}
+      <div className="container-page">
+        <div className="flex h-16 items-center justify-between gap-6 rounded-full bg-white/90 pr-2.5 pl-3 shadow-[0_16px_40px_-24px_rgba(59,73,93,0.45)] ring-1 ring-white backdrop-blur sm:h-[4.5rem] sm:pr-3 sm:pl-5">
+          <Logo />
 
-        <nav aria-label="Основное меню" className="hidden xl:block">
-          <ul className="flex gap-7 text-[15px] font-medium whitespace-nowrap text-brand-deep">
-            {mainNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="transition-colors hover:text-brand">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          {/* display задаётся обёрткой, чтобы не спорить с классами ссылки. */}
-          <div className="hidden sm:block">
-            <Suspense>
-              <MainPhone className="inline-flex items-center gap-2 font-semibold whitespace-nowrap text-brand-deep hover:text-brand" />
-            </Suspense>
-          </div>
-
-          {/* Мобильное меню на <details> — работает без JavaScript. */}
-          <details className="relative size-11 shrink-0 xl:hidden">
-            <summary
-              className={`${iconCircle} size-11 cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
-            >
-              <span className="sr-only">Открыть меню</span>
-              <Menu className="size-5" aria-hidden="true" />
-            </summary>
-            <nav
-              aria-label="Мобильное меню"
-              className="card absolute right-0 mt-4 w-72 rounded-[1.75rem] bg-white p-2"
-            >
-              <ul>
-                {mainNav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="block rounded-2xl px-4 py-2.5 font-medium hover:bg-brand-soft"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-                <li className="mt-2 border-t border-line pt-2 empty:hidden">
-                  <Suspense>
-                    <MainPhone className={`${buttonClass("light", "md")} w-full`} />
-                  </Suspense>
+          <nav aria-label="Основное меню" className="hidden xl:block">
+            <ul className="flex gap-6 text-[15px] leading-6 font-medium whitespace-nowrap text-brand-deep 2xl:gap-8">
+              {mainNav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="transition-colors hover:text-brand">
+                    {item.label}
+                  </Link>
                 </li>
-              </ul>
-            </nav>
-          </details>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            {/* display задаётся обёрткой, чтобы не спорить с классами ссылки. */}
+            <div className="hidden sm:block">
+              <Suspense>
+                <MainPhone className="inline-flex items-center gap-2 font-semibold whitespace-nowrap text-brand-deep hover:text-brand" />
+              </Suspense>
+            </div>
+
+            {/* Мобильное меню на <details> — работает без JavaScript. */}
+            <details className="relative size-11 shrink-0 xl:hidden">
+              <summary
+                className={`${iconCircle} size-11 cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+              >
+                <span className="sr-only">Открыть меню</span>
+                <Menu className="size-5" aria-hidden="true" />
+              </summary>
+              <nav
+                aria-label="Мобильное меню"
+                className="card absolute -right-2.5 mt-5 w-[min(20rem,calc(100vw-2.5rem))] rounded-[1.75rem] bg-white p-3"
+              >
+                <ul>
+                  {mainNav.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className="block rounded-2xl px-4 py-3 text-[17px] leading-6 font-medium hover:bg-brand-soft"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="mt-3 border-t border-line pt-3 empty:hidden">
+                    <Suspense>
+                      <MainPhone className={`${buttonClass("light", "md")} w-full`} />
+                    </Suspense>
+                  </li>
+                </ul>
+              </nav>
+            </details>
+          </div>
         </div>
       </div>
     </header>

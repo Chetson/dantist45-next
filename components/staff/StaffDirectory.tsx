@@ -23,15 +23,15 @@ export function StaffDirectory({ staff, clinics }: Props) {
   const tabs = [{ slug: null, name: "Все филиалы" }, ...clinics];
 
   return (
-    <div className="space-y-14">
-      <div role="group" aria-label="Филиал" className="flex flex-wrap gap-2">
+    <div className="space-y-14 sm:space-y-20">
+      <div role="group" aria-label="Филиал" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
         {tabs.map((tab) => (
           <button
             key={tab.slug ?? "all"}
             type="button"
             aria-pressed={clinic === tab.slug}
             onClick={() => setClinic(tab.slug)}
-            className="rounded-full bg-white/70 ring-1 ring-white px-5 py-2 text-sm font-medium transition-colors hover:text-brand aria-pressed:bg-brand aria-pressed:text-white aria-pressed:glow"
+            className="shrink-0 rounded-full bg-white/80 px-5 py-2.5 text-sm leading-6 font-medium whitespace-nowrap ring-1 ring-white transition-colors hover:text-brand aria-pressed:bg-brand aria-pressed:text-white aria-pressed:glow"
           >
             {tab.name}
           </button>
@@ -43,11 +43,11 @@ export function StaffDirectory({ staff, clinics }: Props) {
         if (people.length === 0) return null;
         return (
           <section key={group.kind} aria-labelledby={`group-${group.kind}`}>
-            <h2 id={`group-${group.kind}`} className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
+            <h2 id={`group-${group.kind}`} className="type-h3 mb-6 flex items-baseline gap-3 text-brand-deep sm:mb-8">
               {group.title}
-              <span className="ml-3 align-middle font-sans text-base font-medium text-muted">{people.length}</span>
+              <span className="font-sans text-base font-semibold text-muted">{people.length}</span>
             </h2>
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {people.map((person) => (
                 <li key={person.id}>
                   <StaffCard person={person} />

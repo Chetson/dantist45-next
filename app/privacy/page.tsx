@@ -35,13 +35,15 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHeader title="Персональные данные" current="Персональные данные" />
-      <div className="container-page max-w-3xl space-y-10 py-14">
-        {sections.map((section) => (
-          <section key={section.title}>
-            <h2 className="font-display text-2xl text-brand-deep font-extrabold tracking-tight">{section.title}</h2>
-            <p className="mt-3 leading-relaxed text-foreground/85">{section.text}</p>
-          </section>
-        ))}
+      <div className="container-page grid grid-cols-12 gap-x-6">
+        <div className="col-span-12 space-y-10 sm:space-y-12 lg:col-span-8">
+          {sections.map((section) => (
+            <section key={section.title}>
+              <h2 className="type-h3 text-brand-deep">{section.title}</h2>
+              <p className="mt-3 text-foreground/85">{section.text}</p>
+            </section>
+          ))}
+        </div>
       </div>
     </>
   );

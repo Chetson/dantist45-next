@@ -43,7 +43,7 @@ async function Catalog() {
           key={category.id}
           id={category.slug}
           aria-labelledby={`${category.slug}-title`}
-          className="card grid gap-8 p-6 sm:p-10 lg:grid-cols-[20rem_1fr] [&>*]:min-w-0"
+          className="card card-pad grid grid-cols-12 gap-x-6 gap-y-8 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8"
         >
           <div>
             <span className={`${iconCircle} size-14`}>
@@ -51,7 +51,7 @@ async function Catalog() {
             </span>
             <h2
               id={`${category.slug}-title`}
-              className="mt-6 font-display text-2xl leading-tight font-extrabold tracking-tight [overflow-wrap:anywhere] text-brand-deep lowercase hyphens-auto sm:text-3xl"
+              className="type-h3 mt-6 [overflow-wrap:anywhere] text-brand-deep lowercase hyphens-auto"
             >
               {category.name}
             </h2>

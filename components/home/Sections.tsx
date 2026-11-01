@@ -5,13 +5,13 @@ import { ClinicCard } from "@/components/clinics/ClinicCard";
 import { StaffCard } from "@/components/staff/StaffCard";
 import { buttonClass, iconCircle } from "@/components/ui/button";
 import { CategoryIcon, ToothIcon } from "@/components/ui/icons";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SectionHeading, headingGap } from "@/components/ui/SectionHeading";
 import { getHomeDoctors, getServiceCatalog } from "@/lib/data/content";
 import { getClinics } from "@/lib/data/site";
 import { formatPhone, formatRub } from "@/lib/format";
 
 function Section({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`container-page py-16 sm:py-24 ${className}`}>{children}</section>;
+  return <section className={`container-page section-y ${className}`}>{children}</section>;
 }
 
 // ─── Направления ───────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ export async function ServicesGrid() {
   const categories = catalog.filter((c) => c.showOnHome);
 
   return (
-    <ul className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+    <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-14 lg:grid-cols-4">
       {categories.map((category) => {
         const minPrice = Math.min(...category.services.map((s) => s.priceFrom));
         return (
@@ -31,14 +31,14 @@ export async function ServicesGrid() {
                 <CategoryIcon name={category.icon} className="size-1/2 stroke-[1.5]" />
               </span>
             </div>
-            <h3 className="mt-6 font-display text-xl leading-tight font-extrabold tracking-tight text-brand-deep lowercase">
+            <h3 className="type-h4 mt-5 text-balance text-brand-deep lowercase sm:mt-7">
               <Link href={`/services#${category.slug}`} className="after:absolute after:inset-0">
                 {category.name}
               </Link>
             </h3>
-            <p className="mt-2 max-w-60 text-sm text-muted">{category.summary}</p>
+            <p className="mt-2 hidden max-w-60 text-sm leading-6 text-muted sm:block">{category.summary}</p>
             {Number.isFinite(minPrice) && (
-              <p className="mt-3 text-sm font-semibold text-brand">от {formatRub(minPrice)}</p>
+              <p className="mt-2 text-sm leading-6 font-semibold text-brand sm:mt-3">от {formatRub(minPrice)}</p>
             )}
           </li>
         );
@@ -54,29 +54,29 @@ export function ServicesSection({ children }: { children: ReactNode }) {
         title="стоматологическая помощь для всей семьи"
         note="От профилактики и гигиены до лечения каналов, удаления зубов и протезирования — в рамках лицензии на медицинскую деятельность."
       />
-      <div className="mt-14">{children}</div>
-      <div className="mt-16 grid gap-5 lg:grid-cols-[1.6fr_1fr]">
-        <div className="card flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+      <div className={headingGap}>{children}</div>
+      <div className="mt-14 grid grid-cols-12 gap-4 sm:mt-20 sm:gap-6">
+        <div className="card card-pad col-span-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between lg:col-span-8">
           <div>
-            <p className="flex items-center gap-3 font-display text-xl font-extrabold tracking-tight text-brand-deep">
+            <p className="type-h4 flex items-center gap-3 text-brand-deep">
               <span className={`${iconCircle} size-7`}>
                 <Check className="size-4" aria-hidden="true" />
               </span>
               всё это — в одной клинике,
             </p>
-            <p className="mt-3 max-w-sm text-[15px] text-muted">
+            <p className="mt-3 max-w-md text-muted">
               что позволяет <strong className="font-semibold text-brand-deep">сэкономить время</strong> и пройти
               лечение у специалистов, которые знают вашу историю.
             </p>
           </div>
-          <Link href="/services" className={buttonClass("primary", "lg")}>
+          <Link href="/services" className={`${buttonClass("primary", "lg")} shrink-0`}>
             Смотреть прайс
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="bg-sky-panel rounded-[var(--radius-panel)] p-8 text-white shadow-lg shadow-accent-strong/30 sm:p-10">
+        <div className="bg-sky-panel card-pad col-span-12 rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30 lg:col-span-4">
           <ToothIcon className="size-7" />
-          <p className="mt-6 font-display text-2xl leading-tight font-extrabold tracking-tight">
+          <p className="type-h3 mt-6 text-balance">
             заботимся о здоровье зубов жителей Кургана с 2003 года
           </p>
         </div>
@@ -108,30 +108,30 @@ const reasons = [
 
 export function WhyUs() {
   return (
-    <section className="px-3 sm:px-4">
-      <div className="bg-sky-panel relative mx-auto max-w-[82rem] overflow-hidden rounded-[2.5rem] px-6 py-14 sm:px-12 sm:py-20 lg:px-16">
+    <section className="container-page">
+      <div className="bg-sky-panel panel-pad relative overflow-hidden rounded-[2.5rem]">
         <ToothIcon aria-hidden="true" className="pointer-events-none absolute -top-20 -right-20 size-[30rem] stroke-[0.5] text-white/20" />
         <div className="relative">
           <SectionHeading inverted title="почему пациенты выбирают нас" />
-          <ol className="mt-12 grid gap-5 md:grid-cols-2">
+          <ol className={`${headingGap} grid gap-4 sm:gap-6 md:grid-cols-2`}>
             {reasons.map((reason, i) => {
               const solid = i === 0 || i === 3;
               return (
                 <li
                   key={reason.title}
-                  className={`flex min-h-64 flex-col p-8 sm:p-10 ${solid ? "card text-foreground" : "card-glass text-white"}`}
+                  className={`card-pad flex flex-col sm:min-h-72 ${solid ? "card text-foreground" : "card-glass text-white"}`}
                 >
-                  <span className={`text-sm ${solid ? "text-muted" : "text-white/80"}`}>
+                  <span className={`text-sm leading-6 font-semibold ${solid ? "text-muted" : "text-white/80"}`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3
-                    className={`mt-auto pt-10 font-display text-2xl leading-tight font-extrabold tracking-tight ${
+                    className={`type-h3 mt-auto pt-6 text-balance sm:pt-10 ${
                       solid ? "text-brand-deep" : "text-white"
                     }`}
                   >
                     {reason.title}
                   </h3>
-                  <p className={`mt-4 max-w-md text-[15px] leading-relaxed ${solid ? "text-foreground/80" : "text-white/90"}`}>
+                  <p className={`mt-3 max-w-md ${solid ? "text-foreground/80" : "text-white/90"}`}>
                     {reason.text}
                   </p>
                 </li>
@@ -156,17 +156,17 @@ const aboutPoints = [
 export function About() {
   return (
     <Section>
-      <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
-        <div className="card p-8 sm:p-12">
-          <h2 className="heading-xl text-4xl text-brand-deep normal-case sm:text-5xl">о клинике «Дантист»</h2>
-          <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-foreground/85">
+      <div className="grid grid-cols-12 gap-4 sm:gap-6">
+        <div className="card card-pad col-span-12 lg:col-span-8">
+          <h2 className="type-h2 text-brand-deep normal-case">о клинике «Дантист»</h2>
+          <p className="type-lead mt-6 max-w-2xl text-foreground/85">
             Клиника работает в Кургане с 2003 года. Мы оказываем{" "}
             <strong className="font-semibold text-brand-deep">терапевтическую, хирургическую и ортопедическую</strong>{" "}
             стоматологическую помощь и проводим профессиональную гигиену полости рта.
           </p>
-          <ul className="mt-8 space-y-3">
+          <ul className="mt-8 grid gap-x-6 gap-y-4 md:grid-cols-2">
             {aboutPoints.map((point) => (
-              <li key={point} className="flex gap-3">
+              <li key={point} className="grid grid-cols-[1.5rem_1fr] gap-x-3">
                 <span className={`${iconCircle} mt-0.5 size-6`}>
                   <Check className="size-3.5" aria-hidden="true" />
                 </span>
@@ -175,21 +175,21 @@ export function About() {
             ))}
           </ul>
         </div>
-        <div className="grid gap-5">
-          <Link href="/licenses" className="card group flex flex-col p-8 transition-transform hover:-translate-y-0.5">
+        <div className="col-span-12 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:col-span-4 lg:grid-cols-1">
+          <Link href="/licenses" className="card card-pad group flex flex-col transition-transform hover:-translate-y-0.5">
             <span className={`${iconCircle} size-12`}>
               <ShieldCheck className="size-5" aria-hidden="true" />
             </span>
-            <p className="mt-8 font-display text-2xl font-extrabold tracking-tight text-brand-deep">лицензия</p>
-            <p className="mt-2 text-sm text-muted">№ ЛО-45-01-001150 от 28 января 2014 года</p>
+            <p className="type-h3 mt-8 text-brand-deep">лицензия</p>
+            <p className="mt-2 text-sm leading-6 text-muted">№ ЛО-45-01-001150 от 28 января 2014 года</p>
           </Link>
           <Link
             href="/specialists"
-            className="bg-sky-panel group flex flex-col rounded-[var(--radius-panel)] p-8 text-white shadow-lg shadow-accent-strong/30 transition-transform hover:-translate-y-0.5"
+            className="bg-sky-panel card-pad group flex flex-col rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30 transition-transform hover:-translate-y-0.5"
           >
             <Users className="size-6" aria-hidden="true" />
-            <p className="mt-8 font-display text-2xl font-extrabold tracking-tight">специалисты</p>
-            <p className="mt-2 text-sm text-white/85">Образование, квалификация и аккредитация</p>
+            <p className="type-h3 mt-8">специалисты</p>
+            <p className="mt-2 text-sm leading-6 text-white/85">Образование, квалификация и аккредитация</p>
           </Link>
         </div>
       </div>
@@ -215,14 +215,14 @@ export async function DoctorsWidget() {
         }
         note="Сведения об образовании, квалификации и аккредитации каждого специалиста опубликованы в его карточке."
       />
-      <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className={`${headingGap} grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3`}>
         {doctors.map((person) => (
           <li key={person.id}>
             <StaffCard person={person} />
           </li>
         ))}
       </ul>
-      <div className="mt-10 text-center">
+      <div className="mt-10 flex justify-center sm:mt-14">
         <Link href="/specialists" className={buttonClass("primary", "lg")}>
           Все специалисты
           <ArrowUpRight className="size-4" aria-hidden="true" />
@@ -237,7 +237,7 @@ export async function DoctorsWidget() {
 export async function ClinicsGrid() {
   const clinics = await getClinics();
   return (
-    <ul className="grid gap-12 lg:grid-cols-2 lg:gap-8">
+    <ul className="grid gap-x-6 gap-y-14 lg:grid-cols-2">
       {clinics.map((clinic) => (
         <li key={clinic.id}>
           <ClinicCard clinic={clinic} />
@@ -254,7 +254,7 @@ export function ClinicsSection({ children }: { children: ReactNode }) {
         title="можете найти нас по адресу"
         note="Запись на приём — по телефону филиала. Сайт не принимает заявки и не собирает персональные данные."
       />
-      <div className="mt-12">{children}</div>
+      <div className={headingGap}>{children}</div>
     </Section>
   );
 }
@@ -286,18 +286,18 @@ export function PatientInfo() {
   return (
     <Section className="pt-0 sm:pt-0">
       <SectionHeading title="информация для пациентов" />
-      <ul className="mt-12 grid gap-5 md:grid-cols-3">
+      <ul className={`${headingGap} grid gap-4 sm:gap-6 md:grid-cols-3`}>
         {patientLinks.map(({ href, icon: Icon, title, text }) => (
           <li key={href}>
-            <Link href={href} className="card group flex h-full flex-col p-8 transition-transform hover:-translate-y-0.5">
+            <Link href={href} className="card card-pad group flex h-full flex-col transition-transform hover:-translate-y-0.5">
               <div className="flex items-start justify-between">
                 <span className={`${iconCircle} size-12`}>
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <ArrowUpRight className="size-5 text-muted group-hover:text-brand" aria-hidden="true" />
               </div>
-              <h3 className="mt-10 font-display text-2xl font-extrabold tracking-tight text-brand-deep">{title}</h3>
-              <p className="mt-2 text-sm text-muted">{text}</p>
+              <h3 className="type-h3 mt-8 text-brand-deep sm:mt-10">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted">{text}</p>
             </Link>
           </li>
         ))}
@@ -318,19 +318,19 @@ export async function CallPhones() {
           <li key={clinic.id}>
             <a
               href={`tel:${clinic.phones[0].number}`}
-              className="inline-flex items-center gap-3 rounded-full bg-white/90 py-2 pr-6 pl-2 text-brand-deep shadow-lg shadow-brand-deep/10 transition-colors hover:bg-white"
+              className="flex w-full items-center gap-3 rounded-full bg-white/90 py-2 pr-6 pl-2 text-brand-deep shadow-lg shadow-brand-deep/10 transition-colors hover:bg-white"
             >
               <span className={`${iconCircle} size-10`}>
                 <ArrowUpRight className="size-4" aria-hidden="true" />
               </span>
               <span className="leading-tight">
                 <span className="block font-semibold">{formatPhone(clinic.phones[0].number)}</span>
-                <span className="text-xs text-muted">{clinic.name}</span>
+                <span className="text-xs leading-5 text-muted">{clinic.name}</span>
               </span>
             </a>
           </li>
         ))}
-      <li>
+      <li className="pt-1 pl-2">
         <Link href="/clinics" className="text-sm font-semibold text-white underline underline-offset-4">
           Все филиалы и телефоны
         </Link>
@@ -341,18 +341,18 @@ export async function CallPhones() {
 
 export function CallToAction({ children }: { children: ReactNode }) {
   return (
-    <section className="px-3 sm:px-4">
-      <div className="bg-sky-panel relative mx-auto max-w-[82rem] overflow-hidden rounded-[2.5rem] px-6 py-14 text-white sm:px-12 sm:py-20 lg:px-16">
+    <section className="container-page">
+      <div className="bg-sky-panel panel-pad relative overflow-hidden rounded-[2.5rem] text-white">
         <ToothIcon aria-hidden="true" className="pointer-events-none absolute -right-10 -bottom-24 size-[26rem] stroke-[0.5] text-white/25" />
-        <div className="relative grid items-center gap-10 lg:grid-cols-[1.4fr_1fr]">
-          <div>
-            <h2 className="heading-xl text-4xl sm:text-6xl">начните путь к здоровой улыбке с консультации</h2>
-            <p className="mt-6 max-w-xl text-lg text-white/90">
+        <div className="relative grid grid-cols-12 items-center gap-x-6 gap-y-10">
+          <div className="col-span-12 lg:col-span-7">
+            <h2 className="type-h2 text-balance">начните путь к здоровой улыбке с консультации</h2>
+            <p className="type-lead mt-6 max-w-xl text-white/90">
               Врач проведёт <strong className="font-bold">осмотр</strong>, при необходимости назначит снимок и
               предложит <strong className="font-bold">план лечения</strong> с ориентировочной стоимостью.
             </p>
           </div>
-          <div className="lg:justify-self-end">{children}</div>
+          <div className="col-span-12 lg:col-span-4 lg:col-start-9">{children}</div>
         </div>
       </div>
     </section>

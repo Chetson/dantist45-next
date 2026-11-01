@@ -41,11 +41,11 @@ async function DocumentsList() {
         if (items.length === 0) return null;
         return (
           <section key={group.key} aria-labelledby={`group-${group.key}`}>
-            <h2 id={`group-${group.key}`} className="font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
+            <h2 id={`group-${group.key}`} className="type-h3 text-brand-deep">
               {group.title}
             </h2>
             <p className="mt-2 text-muted">{group.lead}</p>
-            <ul className="mt-6 grid gap-4 md:grid-cols-2">
+            <ul className="mt-6 grid gap-4 sm:gap-6 md:grid-cols-2">
               {items.map((doc) => {
                 const href = doc.file ?? doc.url;
                 return (
@@ -94,24 +94,24 @@ export default function DocumentsPage() {
         current="Пациентам"
         lead="Документы, регулирующие оказание медицинских услуг, и информация о ваших правах."
       />
-      <div className="container-page space-y-14 py-14">
+      <div className="container-page space-y-14 sm:space-y-20">
         <Suspense fallback={<Skeleton className="h-96" />}>
           <DocumentsList />
         </Suspense>
 
-        <section className="grid gap-6 md:grid-cols-2">
-          <div className="card p-7">
-            <h2 className="font-display text-xl text-brand-deep font-extrabold tracking-tight">Бесплатная медицинская помощь</h2>
-            <p className="mt-3 text-[15px] text-foreground/80">
+        <section className="grid gap-4 sm:gap-6 md:grid-cols-2">
+          <div className="card card-pad">
+            <h2 className="type-h4 text-brand-deep">Бесплатная медицинская помощь</h2>
+            <p className="mt-3 text-foreground/80">
               Гражданам гарантируется бесплатная медицинская помощь в рамках Территориальной
               программы государственных гарантий Курганской области. Узнать, где и как её получить,
               можно в своей страховой медицинской организации и в Департаменте здравоохранения
               Курганской области.
             </p>
           </div>
-          <div className="card p-7">
-            <h2 className="font-display text-xl text-brand-deep font-extrabold tracking-tight">Если права нарушены</h2>
-            <p className="mt-3 text-[15px] text-foreground/80">
+          <div className="card card-pad">
+            <h2 className="type-h4 text-brand-deep">Если права нарушены</h2>
+            <p className="mt-3 text-foreground/80">
               Порядок обращения и контакты органов, контролирующих работу клиники, — на странице{" "}
               <Link href="/regulators" className="font-medium text-brand underline">
                 «Контролирующие органы»

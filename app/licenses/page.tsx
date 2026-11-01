@@ -53,13 +53,13 @@ async function LicensesList() {
     <div className="space-y-16">
       {licenses.map((license) => (
         <article key={license.id} className="space-y-10">
-          <div className="grid gap-10 lg:grid-cols-[1fr_22rem]">
+          <div className="grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-8 lg:[&>*:last-child]:col-span-4">
             <div>
               <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold tracking-wide text-brand uppercase">
                 <ShieldCheck className="size-4" aria-hidden="true" />
                 Действующая лицензия
               </p>
-              <h2 className="font-display text-3xl text-brand-deep font-extrabold tracking-tight">
+              <h2 className="type-h2 text-brand-deep normal-case">
                 Лицензия № {license.number}
               </h2>
               <dl className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-[auto_1fr]">
@@ -100,10 +100,10 @@ async function LicensesList() {
             <section
               key={annex.id}
               aria-labelledby={`annex-${annex.id}`}
-              className="grid gap-10 card p-7 sm:p-10 lg:grid-cols-[1fr_22rem]"
+              className="card card-pad grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-8 lg:[&>*:last-child]:col-span-4"
             >
               <div>
-                <h3 id={`annex-${annex.id}`} className="font-display text-2xl text-brand-deep font-extrabold tracking-tight">
+                <h3 id={`annex-${annex.id}`} className="type-h3 text-brand-deep">
                   {annex.number}
                   {annex.blankNumber && <span className="ml-3 text-base font-sans text-muted">бланк {annex.blankNumber}</span>}
                 </h3>
@@ -141,7 +141,7 @@ export default function LicensesPage() {
         current="Лицензии"
         lead="ООО «Дантист» осуществляет медицинскую деятельность на основании лицензии, выданной Департаментом здравоохранения Курганской области."
       />
-      <div className="container-page py-14">
+      <div className="container-page">
         <Suspense fallback={<Skeleton className="h-[40rem]" />}>
           <LicensesList />
         </Suspense>

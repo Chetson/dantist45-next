@@ -33,18 +33,18 @@ export function ClinicCard({ clinic }: { clinic: Clinic }) {
   return (
     <article className="flex h-full flex-col gap-5">
       <div>
-        <h3 className="heading-xl text-3xl text-brand-deep sm:text-4xl">
+        <h3 className="type-h3 text-brand-deep lowercase sm:text-[2rem]">
           <Link href={`/clinics/${clinic.slug}`} className="hover:text-brand">
             {clinic.name}
           </Link>
         </h3>
-        <div className="mt-5 flex items-start gap-4">
+        <div className="mt-5 grid grid-cols-[2.75rem_1fr] items-start gap-x-4">
           <span className={`${iconCircle} size-11`}>
             <MapPin className="size-5" aria-hidden="true" />
           </span>
           <div className="pt-1">
-            <p className="text-[15px]">{clinic.address}</p>
-            <p className="mt-1 flex gap-4 text-sm">
+            <p>{clinic.address}</p>
+            <p className="mt-1 flex flex-wrap gap-x-4 text-sm leading-6">
               <a href={maps.yandex} target="_blank" rel="noopener noreferrer" className="font-medium text-brand hover:underline">
                 Яндекс Карты
               </a>
@@ -56,12 +56,12 @@ export function ClinicCard({ clinic }: { clinic: Clinic }) {
         </div>
       </div>
 
-      <div className="grid flex-1 gap-4 sm:grid-cols-2">
-        <div className="card p-6">
+      <div className="grid flex-1 gap-4 sm:grid-cols-2 sm:gap-6">
+        <div className="card card-pad-sm">
           <Phone className="size-5 text-brand-deep" aria-hidden="true" />
-          <p className="mt-6 font-display text-lg font-extrabold tracking-tight text-brand-deep">контакты</p>
+          <p className="type-h4 mt-6 text-brand-deep">контакты</p>
           {clinic.phones.length > 0 ? (
-            <ul className="mt-2 space-y-1 text-[15px]">
+            <ul className="mt-3 space-y-1">
               {clinic.phones.map((phone) => (
                 <li key={phone.id}>
                   <a href={`tel:${phone.number}`} className="hover:text-brand">
@@ -71,13 +71,13 @@ export function ClinicCard({ clinic }: { clinic: Clinic }) {
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-[15px] text-muted">Телефон филиала уточняется</p>
+            <p className="mt-3 text-muted">Телефон филиала уточняется</p>
           )}
         </div>
-        <div className="bg-sky-panel rounded-[var(--radius-panel)] p-6 text-white shadow-lg shadow-accent-strong/30">
+        <div className="bg-sky-panel card-pad-sm rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30">
           <Clock className="size-5" aria-hidden="true" />
-          <p className="mt-6 font-display text-lg font-extrabold tracking-tight">график</p>
-          <div className="mt-2 text-[15px]">
+          <p className="type-h4 mt-6">график</p>
+          <div className="mt-3">
             <ClinicSchedule schedule={clinic.schedule} inverted />
           </div>
         </div>

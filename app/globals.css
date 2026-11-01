@@ -54,15 +54,166 @@
   --radius-panel: 2.25rem;
 }
 
+/*
+ * Сетка: контейнер 80rem, поля 1.25rem (телефон) / 2rem (от 640px).
+ * Правило выравнивания: внешние края всех блоков — карточек, панелей,
+ * шапки и футера — лежат на краях контейнера; промежуток между колонками
+ * везде один (gap-4 / sm:gap-6). Поэтому сетки на 2, 3 и 4 колонки
+ * совпадают с 12-колоночной сеткой страницы.
+ */
 @utility container-page {
   width: 100%;
-  max-width: 82rem;
+  max-width: 80rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: 1.25rem;
 
   @media (width >= 40rem) {
-    padding-inline: 1.5rem;
+    padding-inline: 2rem;
   }
+}
+
+/* Вертикальный ритм секций. */
+@utility section-y {
+  padding-block: 4rem;
+
+  @media (width >= 40rem) {
+    padding-block: 5.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-block: 7rem;
+  }
+}
+
+/* Внутренние поля градиентных панелей. */
+@utility panel-pad {
+  padding: 3rem 1.5rem;
+
+  @media (width >= 40rem) {
+    padding: 4rem 2.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding: 5rem 3.5rem;
+  }
+}
+
+/* Внутренние поля карточек: большие и малые. */
+@utility card-pad {
+  padding: 1.5rem;
+
+  @media (width >= 40rem) {
+    padding: 2rem;
+  }
+
+  @media (width >= 64rem) {
+    padding: 2.5rem;
+  }
+}
+
+@utility card-pad-sm {
+  padding: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding: 1.5rem;
+  }
+}
+
+/*
+ * Типографская шкала (модульная, ~1.25): display → h1 → h2 → h3 → h4,
+ * lead и мелкий текст. Крупные заголовки — строчные, как в макете.
+ */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  font-size: 2.625rem;
+  line-height: 1.04;
+
+  @media (width >= 40rem) {
+    font-size: 4rem;
+  }
+
+  @media (width >= 64rem) {
+    font-size: 4.75rem;
+  }
+}
+
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-transform: lowercase;
+  font-size: 2.375rem;
+  line-height: 1.06;
+
+  @media (width >= 40rem) {
+    font-size: 3.5rem;
+  }
+
+  @media (width >= 64rem) {
+    font-size: 4rem;
+  }
+}
+
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-transform: lowercase;
+  font-size: 2rem;
+  line-height: 1.08;
+
+  @media (width >= 40rem) {
+    font-size: 2.75rem;
+  }
+
+  @media (width >= 64rem) {
+    font-size: 3.25rem;
+  }
+}
+
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  font-size: 1.375rem;
+  line-height: 1.2;
+
+  @media (width >= 40rem) {
+    font-size: 1.625rem;
+  }
+}
+
+@utility type-h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-size: 1.125rem;
+  line-height: 1.3;
+
+  @media (width >= 40rem) {
+    font-size: 1.25rem;
+  }
+}
+
+@utility type-lead {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+
+  @media (width >= 40rem) {
+    font-size: 1.1875rem;
+  }
+}
+
+/* Подписи, метки над заголовками. */
+@utility type-eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* Небесно-голубая градиентная панель (hero, «почему мы», призыв позвонить). */
@@ -96,24 +247,17 @@
   box-shadow: 0 12px 28px -10px rgb(125 136 203 / 0.85);
 }
 
-/* Крупные заголовки макета: строчные, плотные, тяжёлые. */
-@utility heading-xl {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
-  text-transform: lowercase;
-}
-
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 7rem;
+    scroll-padding-top: 8rem;
   }
 
   body {
     background: var(--background);
     color: var(--foreground);
+    font-size: 1rem;
+    line-height: 1.65;
     /* У Raleway по умолчанию старостильные цифры — для цен и номеров
        документов нужны обычные. */
     font-variant-numeric: lining-nums;

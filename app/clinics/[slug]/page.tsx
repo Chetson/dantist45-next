@@ -31,9 +31,9 @@ async function ClinicDetails({ slug }: { slug: string }) {
         current={clinic.name}
         lead={clinic.address}
       />
-      <div className="container-page grid gap-10 py-14 lg:grid-cols-[22rem_1fr]">
+      <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8">
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-          <div className="bg-sky-panel space-y-5 rounded-[var(--radius-panel)] p-7 text-white shadow-lg shadow-accent-strong/30">
+          <div className="bg-sky-panel card-pad space-y-6 rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30">
             <div className="flex gap-3">
               <MapPin className="mt-0.5 size-5 shrink-0 text-white" aria-hidden="true" />
               <div>
@@ -75,10 +75,10 @@ async function ClinicDetails({ slug }: { slug: string }) {
         <div className="space-y-14">
           {clinic.staff.length > 0 && (
             <section aria-labelledby="staff-title">
-              <h2 id="staff-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
+              <h2 id="staff-title" className="type-h3 mb-6 sm:mb-8 text-brand-deep">
                 Специалисты филиала
               </h2>
-              <ul className="grid gap-4 sm:grid-cols-2">
+              <ul className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {clinic.staff.map(({ staff, position }) => (
                   <li key={staff.id}>
                     <Link
@@ -103,17 +103,17 @@ async function ClinicDetails({ slug }: { slug: string }) {
           )}
 
           <section aria-labelledby="license-title">
-            <h2 id="license-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
+            <h2 id="license-title" className="type-h3 mb-6 sm:mb-8 text-brand-deep">
               Лицензия по этому адресу
             </h2>
             {clinic.licenseAnnexes.length > 0 ? (
               clinic.licenseAnnexes.map((annex) => (
-                <article key={annex.id} className="card p-7">
+                <article key={annex.id} className="card card-pad">
                   <p className="flex items-center gap-2 font-semibold text-brand">
                     <ShieldCheck className="size-5 text-brand" aria-hidden="true" />
                     {annex.number} к лицензии № {annex.license.number} от {formatDate(annex.license.issuedAt)}
                   </p>
-                  <p className="mt-4 text-[15px] leading-relaxed text-foreground/85">{annex.works}</p>
+                  <p className="mt-4 text-foreground/85">{annex.works}</p>
                   <Link
                     href="/licenses"
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:gap-2.5"
@@ -124,7 +124,7 @@ async function ClinicDetails({ slug }: { slug: string }) {
                 </article>
               ))
             ) : (
-              <p className="card rounded-[1.75rem] p-5 text-muted">
+              <p className="card card-pad-sm rounded-[1.75rem] text-muted">
                 Приложение к лицензии для этого адреса будет опубликовано в ближайшее время.
                 Все сведения о лицензии — в разделе{" "}
                 <Link href="/licenses" className="text-brand underline">
@@ -146,7 +146,7 @@ export default function ClinicPage({ params }: PageProps<"/clinics/[slug]">) {
       fallback={
         <>
           <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
-          <div className="container-page grid gap-10 py-14 lg:grid-cols-[22rem_1fr]">
+          <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8">
             <Skeleton className="h-80" />
             <Skeleton className="h-96" />
           </div>

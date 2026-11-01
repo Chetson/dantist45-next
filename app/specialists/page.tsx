@@ -30,7 +30,7 @@ export default function SpecialistsPage() {
         current="Специалисты"
         lead="Медицинские работники, участвующие в оказании медицинских услуг. В карточке каждого — сведения об образовании, квалификации и аккредитации."
       />
-      <div className="container-page py-14">
+      <div className="container-page">
         <Suspense fallback={<CardGridSkeleton count={6} />}>
           <Directory />
         </Suspense>

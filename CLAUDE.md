@@ -35,6 +35,8 @@ App Router, строгий TypeScript, псевдоним `@/*` → корень
 - Деплой: `Dockerfile` + `docker-compose.yml` (postgres → migrate → app → caddy), инструкция — [DEPLOYMENT.md](DEPLOYMENT.md).
 - `components/layout/*` — Header/Footer; `components/ui/*` — общие элементы (`buttonClass`, `SectionHeading`, `PageHeader`, `Markdown`, иконки); `components/{home,services,staff,clinics}/*` — блоки страниц.
 - Дизайн — по макету «Dental Clinic» (Behance, rs-dent): светлый холодный фон, лавандовый акцент (`brand`), небесно-голубые градиентные панели (`bg-sky-panel`), «стеклянные» карточки (`card`, `card-glass`), свечение (`glow`), крупные строчные заголовки (`heading-xl`, Manrope 800), текст — Raleway. Токены и утилиты — в `app/globals.css`; только Tailwind, без CSS-модулей. Имена людей и названия статей в заголовках не переводятся в строчные (`PageHeader keepCase`).
+- Сетка и типографика — утилиты в `app/globals.css`: `container-page` (80rem), 12 колонок `grid-cols-12` с промежутком `gap-4 sm:gap-6` везде (тогда сетки на 2/3/4 колонки совпадают с 12-колоночной), `section-y`, `panel-pad`, `card-pad`, `card-pad-sm`; шкала заголовков `type-display` → `type-h1` → `type-h2` → `type-h3` → `type-h4`, плюс `type-lead`, `type-eyebrow`. Не задавайте размеры шрифтов и отступы карточек вручную. Внешние края всех блоков (карточек, панелей, шапки, футера) лежат на краях контейнера.
+- После правки `app/globals.css` перезапускайте `npm run dev`: загрузчик `@tailwindcss/turbopack` не пересобирает стили по горячей перезагрузке (классы в компонентах подхватываются без перезапуска).
 - Страницы `[slug]` читают `params` внутри `<Suspense>` (без `generateStaticParams` — сборка без БД).
 - На сайте нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9).
 
