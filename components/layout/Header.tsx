@@ -16,7 +16,9 @@ async function MainPhone({ className }: { className: string }) {
 
   return (
     <a href={`tel:${phone.number}`} className={className}>
-      <Phone className="size-4 text-brand" aria-hidden="true" />
+      <span className={`${iconCircle} size-8`}>
+        <Phone className="size-3.5" aria-hidden="true" />
+      </span>
       {formatPhone(phone.number)}
     </a>
   );
@@ -47,9 +49,10 @@ export function Logo({ inverted }: { inverted?: boolean }) {
 export function Header() {
   return (
     <header className="sticky top-0 z-40 pt-3 sm:pt-4">
-      {/* Края «пилюли» совпадают с краями сетки страницы. */}
+      {/* Края «пилюли» совпадают с краями сетки страницы. Поля по бокам равны
+          отступу круга логотипа сверху и снизу — элементы концентричны скруглению. */}
       <div className="container-page">
-        <div className="flex h-16 items-center justify-between gap-6 rounded-full bg-white/90 pr-2.5 pl-3 shadow-[0_16px_40px_-24px_rgba(59,73,93,0.45)] ring-1 ring-white backdrop-blur sm:h-[4.5rem] sm:pr-3 sm:pl-5">
+        <div className="flex h-16 items-center justify-between gap-6 rounded-full bg-white/90 pr-2.5 pl-3 shadow-[0_16px_40px_-24px_rgba(59,73,93,0.45)] ring-1 ring-white backdrop-blur sm:h-[4.5rem] sm:px-4">
           <Logo />
 
           <nav aria-label="Основное меню" className="hidden xl:block">
@@ -68,14 +71,14 @@ export function Header() {
             {/* display задаётся обёрткой, чтобы не спорить с классами ссылки. */}
             <div className="hidden sm:block">
               <Suspense>
-                <MainPhone className="inline-flex items-center gap-2 font-semibold whitespace-nowrap text-brand-deep hover:text-brand" />
+                <MainPhone className="inline-flex h-10 items-center gap-2.5 rounded-full bg-brand-soft py-1 pr-4 pl-1 text-[15px] leading-none font-semibold whitespace-nowrap text-brand-deep transition-colors hover:bg-brand hover:text-white" />
               </Suspense>
             </div>
 
             {/* Мобильное меню на <details> — работает без JavaScript. */}
-            <details className="relative size-11 shrink-0 xl:hidden">
+            <details className="relative size-11 shrink-0 sm:size-10 xl:hidden">
               <summary
-                className={`${iconCircle} size-11 cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+                className={`${iconCircle} size-11 cursor-pointer list-none sm:size-10 [&::-webkit-details-marker]:hidden`}
               >
                 <span className="sr-only">Открыть меню</span>
                 <Menu className="size-5" aria-hidden="true" />
