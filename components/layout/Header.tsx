@@ -27,7 +27,7 @@ async function MainPhone({ className }: { className: string }) {
 
 export function Logo({ inverted }: { inverted?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5" aria-label="Стоматология «Дантист», на главную">
+    <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Стоматология «Дантист», на главную">
       <span className={`${iconCircle} size-10`}>
         <ToothIcon className="size-5" />
       </span>
@@ -39,7 +39,7 @@ export function Logo({ inverted }: { inverted?: boolean }) {
         >
           дантист
         </span>
-        <span className={`mt-1 text-xs leading-none ${inverted ? "text-white/70" : "text-muted"}`}>
+        <span className={`mt-1 text-xs leading-none whitespace-nowrap ${inverted ? "text-white/70" : "text-muted"}`}>
           стоматология · Курган
         </span>
       </span>
@@ -91,7 +91,7 @@ export function Header({ subnav }: { subnav?: ReactNode }) {
                 </summary>
                 <nav
                   aria-label="Мобильное меню"
-                  className="card absolute -right-2.5 mt-5 w-[min(20rem,calc(100vw-2.5rem))] rounded-[1.75rem] bg-white p-3"
+                  className="card absolute -right-2.5 z-10 mt-5 w-[min(20rem,calc(100vw-2.5rem))] rounded-[1.75rem] bg-white p-3"
                 >
                   <ul>
                     {mainNav.map((item) => (
@@ -114,7 +114,14 @@ export function Header({ subnav }: { subnav?: ReactNode }) {
               </details>
             </div>
           </div>
-          {subnav && <div className="mx-auto max-w-[76rem] pr-2.5 pl-3 sm:px-4">{subnav}</div>}
+          {/* Обёртка сабхедера обрезает содержимое по скруглению низа шапки:
+              иначе свечение активной ссылки выходит за угол «пилюли». Обрезаем
+              только эту строку, а не всю шапку — там выпадающее мобильное меню. */}
+          {subnav && (
+            <div className="overflow-hidden rounded-b-[2rem] transition-[border-radius] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[scrolled=true]/header:rounded-none motion-reduce:transition-none sm:rounded-b-[2.25rem]">
+              <div className="mx-auto max-w-[76rem] pr-2.5 pl-3 sm:px-4">{subnav}</div>
+            </div>
+          )}
         </div>
       </div>
     </StickyHeader>

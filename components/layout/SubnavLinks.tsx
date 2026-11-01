@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FreeMode, Mousewheel } from "swiper/modules";
+import { Swiper, SwiperSlide, type SwiperRef } from "swiper/react";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 type Item = { id: string; label: string };
 
@@ -17,15 +21,17 @@ const BOTTOM_ZONE = 100;
 /**
  * Вторая строка шапки: якорные ссылки на разделы страницы.
  *
+ * Строку листает Swiper: свайпом на телефоне, перетаскиванием мышью и
+ * горизонтальной прокруткой тачпада на компьютере (вертикальное колесо
+ * остаётся за страницей). После перетаскивания клик по ссылке не срабатывает.
+ *
  * Активный раздел — последний, чей верх уже поднялся выше «линии чтения»
- * сразу под шапкой. Так подсветка совпадает с тем, куда приводит клик
- * по якорю (раздел встаёт прямо под шапкой), и не зависит от высоты разделов.
- * После клика подсветка фиксируется на выбранном разделе, пока идёт плавная
- * прокрутка, — иначе она пробегала бы по всем промежуточным разделам.
+ * под шапкой. После клика подсветка фиксируется на выбранном разделе, пока
+ * идёт плавная прокрутка, — иначе она пробегала бы по промежуточным разделам.
  */
 export function SubnavLinks({ items, label }: { items: Item[]; label: string }) {
   const [active, setActive] = useState<string | null>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const swiperRef = useRef<SwiperRef>(null);
   const navRef = useRef<HTMLElement>(null);
   const lockedRef = useRef(false);
   const updateRef = useRef<() => void>(() => {});
@@ -50,8 +56,7 @@ export function SubnavLinks({ items, label }: { items: Item[]; label: string }) 
       // прокрутиться до него. Тогда он активен в нижних ~100px прокрутки.
       const remaining =
         document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
-      const atBottom = remaining <= BOTTOM_ZONE;
-      if (atBottom) current = sections[sections.length - 1].id;
+      if (remaining <= BOTTOM_ZONE) current = sections[sections.length - 1].id;
       setActive(current);
     };
     const schedule = () => {
@@ -69,16 +74,19 @@ export function SubnavLinks({ items, label }: { items: Item[]; label: string }) 
     };
   }, [items]);
 
-  // Прокручиваем по горизонтали только саму строку ссылок. scrollIntoView
-  // здесь нельзя: он трогает и прокрутку страницы и обрывает плавный переход
-  // к якорю, по которому только что кликнули.
+  // Активная ссылка должна быть видна целиком: если она за краем строки,
+  // листаем Swiper так, чтобы слева от неё оставалась предыдущая.
   useEffect(() => {
-    const list = listRef.current;
-    const link = list?.querySelector<HTMLElement>(`[data-id="${active}"]`);
-    if (!list || !link) return;
-    const left = link.offsetLeft - (list.clientWidth - link.offsetWidth) / 2;
-    list.scrollTo({ left, behavior: "smooth" });
-  }, [active]);
+    const swiper = swiperRef.current?.swiper;
+    const index = items.findIndex((item) => item.id === active);
+    if (!swiper || index < 0) return;
+    const slide = swiper.slides[index];
+    const box = swiper.el.getBoundingClientRect();
+    const rect = slide.getBoundingClientRect();
+    if (rect.left < box.left || rect.right > box.right) {
+      swiper.slideTo(Math.max(0, index - 1), 400);
+    }
+  }, [active, items]);
 
   function handleClick(id: string) {
     setActive(id);
@@ -96,24 +104,34 @@ export function SubnavLinks({ items, label }: { items: Item[]; label: string }) 
 
   return (
     <nav ref={navRef} aria-label={label} className="border-t border-line/80">
-      <ul
-        ref={listRef}
-        className="-mx-3 flex gap-1.5 overflow-x-auto px-3 py-2.5 text-sm leading-5 [scrollbar-width:none] sm:py-3"
+      <Swiper
+        ref={swiperRef}
+        modules={[FreeMode, Mousewheel]}
+        slidesPerView="auto"
+        spaceBetween={6}
+        freeMode={{ enabled: true, momentum: true }}
+        mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
+        grabCursor
+        watchOverflow
+        // Вертикальные поля вмещают свечение активной ссылки (оно компактнее,
+        // чем у кнопок, чтобы не упираться в нижний край шапки).
+        className="cursor-grab py-2.5! text-sm leading-5 active:cursor-grabbing sm:py-3!"
       >
         {items.map((item) => (
-          <li key={item.id} className="shrink-0">
+          <SwiperSlide key={item.id} className="w-auto!">
             <a
               href={`#${item.id}`}
               data-id={item.id}
               aria-current={active === item.id ? "true" : undefined}
               onClick={() => handleClick(item.id)}
-              className="block rounded-full px-4 py-2 whitespace-nowrap text-brand-deep/80 transition-colors hover:bg-brand-soft hover:text-brand-deep aria-[current=true]:bg-brand aria-[current=true]:text-white aria-[current=true]:glow"
+              draggable={false}
+              className="block rounded-full px-4 py-2 whitespace-nowrap text-brand-deep/80 transition-colors select-none hover:bg-brand-soft hover:text-brand-deep aria-[current=true]:bg-brand aria-[current=true]:text-white aria-[current=true]:shadow-[0_4px_12px_-4px_rgb(125_136_203/0.8)]"
             >
               {item.label}
             </a>
-          </li>
+          </SwiperSlide>
         ))}
-      </ul>
+      </Swiper>
     </nav>
   );
 }
