@@ -113,9 +113,11 @@ export function SubnavLinks({ items, label }: { items: Item[]; label: string }) 
         mousewheel={{ forceToAxis: true, releaseOnEdges: true }}
         grabCursor
         watchOverflow
-        // Вертикальные поля вмещают свечение активной ссылки (оно компактнее,
-        // чем у кнопок, чтобы не упираться в нижний край шапки).
-        className="cursor-grab py-2.5! text-sm leading-5 active:cursor-grabbing sm:py-3!"
+        // Swiper не обрезает слайды сам: ссылки уходят за край сетки до контура
+        // шапки, а обрезает их обёртка сабхедера по скруглению (Header.tsx).
+        // Так тени ссылок не срезаются по прямой линии. Вертикальные поля
+        // вмещают свечение активной ссылки.
+        className="cursor-grab overflow-visible! py-2.5! text-sm leading-5 active:cursor-grabbing sm:py-3!"
       >
         {items.map((item) => (
           <SwiperSlide key={item.id} className="w-auto!">
