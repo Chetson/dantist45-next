@@ -1,26 +1,26 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Этот файл предоставляет рекомендации для Claude Code (claude.ai/code) при работе с кодом в этом репозитории.
 
-## Commands
+## Команды
 
 ```bash
 npm run dev     # next dev (http://localhost:3000)
 npm run build   # next build
-npm run start   # next start (after build)
-npm run lint    # eslint (flat config in eslint.config.mjs)
+npm run start   # next start (после сборки)
+npm run lint    # eslint (flat конфиг в eslint.config.mjs)
 ```
 
-No test runner is configured.
+Тестовый раннер не настроен.
 
-## Next.js version warning
+## Предупреждение о версии Next.js
 
-This project uses Next.js 16.4.3 / React 19.3, which differs from older Next.js versions. Per AGENTS.md, read the relevant guide in `node_modules/next/dist/docs/` (`01-app` is the App Router docs) before writing Next.js code, and heed deprecation notices.
+В этом проекте используется Next.js 16.4.3 / React 19.3, что отличается от более старых версий Next.js. Согласно AGENTS.md, перед написанием кода Next.js прочитайте соответствующее руководство в `node_modules/next/dist/docs/` (`01-app` — это документация App Router) и обращайте внимание на предупреждения об устаревших возможностях.
 
-## Architecture
+## Архитектура
 
-Fresh `create-next-app` scaffold using the App Router (`app/` directory: `layout.tsx`, `page.tsx`, `globals.css`), TypeScript strict mode, path alias `@/*` → repo root.
+Свежий шаблон `create-next-app` с использованием App Router (директория `app/`: `layout.tsx`, `page.tsx`, `globals.css`), строгий режим TypeScript, псевдоним пути `@/*` → корень репозитория.
 
-Non-default settings in [next.config.ts](next.config.ts):
-- `cacheComponents: true` and `partialPrefetching: true` — Cache Components / partial prerendering semantics apply, so dynamic data access (e.g. request APIs, uncached fetches) must be handled per the current docs (Suspense boundaries / `use cache`) or the build will error.
-- Tailwind CSS v4 is wired through Turbopack rules (`@tailwindcss/turbopack` loader for `*.css`) rather than PostCSS, so there is no `postcss.config`.
+Нестандартные настройки в [next.config.ts](next.config.ts):
+- `cacheComponents: true` и `partialPrefetching: true` — применяются семантика Cache Components / частичного предварительного рендеринга, поэтому доступ к динамическим данным (например, API запросов, некэшируемые fetch) должен обрабатываться в соответствии с актуальной документацией (границы Suspense / `use cache`), иначе сборка завершится ошибкой.
+- Tailwind CSS v4 подключён через правила Turbopack (загрузчик `@tailwindcss/turbopack` для `*.css`), а не через PostCSS, поэтому `postcss.config` отсутствует.
