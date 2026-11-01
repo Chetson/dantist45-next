@@ -8,10 +8,10 @@ export function Markdown({ children, compact }: { children: string; compact?: bo
       <ReactMarkdown
         skipHtml
         components={{
-          h2: (props) => <h2 className="pt-2 font-display text-2xl text-brand-deep" {...props} />,
+          h2: (props) => <h2 className="pt-2 font-display text-2xl font-bold text-brand-deep" {...props} />,
           h3: (props) => <h3 className="pt-2 text-lg font-semibold text-brand-deep" {...props} />,
-          ul: (props) => <ul className="list-disc space-y-1.5 pl-6 marker:text-accent" {...props} />,
-          ol: (props) => <ol className="list-decimal space-y-1.5 pl-6 marker:text-accent" {...props} />,
+          ul: (props) => <ul className="list-disc space-y-1.5 pl-6 marker:text-brand" {...props} />,
+          ol: (props) => <ol className="list-decimal space-y-1.5 pl-6 marker:text-brand" {...props} />,
           a: (props) => (
             <a className="font-medium text-brand underline underline-offset-2" {...props} />
           ),

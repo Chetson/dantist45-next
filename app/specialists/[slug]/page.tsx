@@ -40,6 +40,7 @@ async function Profile({ slug }: { slug: string }) {
         title={name}
         crumbs={[{ href: "/specialists", label: "Специалисты" }]}
         current={name}
+        keepCase
         lead={<span className="first-letter:uppercase">{person.specialties}</span>}
       />
       <div className="container-page grid gap-10 py-14 lg:grid-cols-[18rem_1fr]">
@@ -47,9 +48,9 @@ async function Profile({ slug }: { slug: string }) {
           <StaffAvatar person={person} className="aspect-square w-full max-w-72 text-7xl" />
           <ul className="space-y-3">
             {person.clinics.map(({ clinic, position }) => (
-              <li key={clinic.slug} className="rounded-2xl border border-line p-4">
+              <li key={clinic.slug} className="card rounded-[1.75rem] p-4">
                 <Link href={`/clinics/${clinic.slug}`} className="flex items-center gap-2 font-medium text-brand hover:underline">
-                  <MapPin className="size-4 text-accent" aria-hidden="true" />
+                  <MapPin className="size-4 text-brand" aria-hidden="true" />
                   {clinic.name}
                 </Link>
                 <p className="mt-1 text-sm text-muted first-letter:uppercase">{position}</p>
@@ -65,13 +66,13 @@ async function Profile({ slug }: { slug: string }) {
             const { title, icon: Icon } = docTypes[type];
             return (
               <section key={type} aria-labelledby={`docs-${type}`}>
-                <h2 id={`docs-${type}`} className="mb-4 flex items-center gap-3 font-display text-2xl text-brand-deep">
-                  <Icon className="size-6 text-accent" aria-hidden="true" />
+                <h2 id={`docs-${type}`} className="mb-4 flex items-center gap-3 font-display text-2xl text-brand-deep font-extrabold tracking-tight">
+                  <Icon className="size-6 text-brand" aria-hidden="true" />
                   {title}
                 </h2>
                 <ul className="space-y-3">
                   {docs.map((doc) => (
-                    <li key={doc.id} className="rounded-2xl border border-line bg-white p-5">
+                    <li key={doc.id} className="card rounded-[1.75rem] p-5">
                       {doc.organization && <p className="font-medium">{doc.organization}</p>}
                       <dl className="mt-2 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
                         {doc.specialty && (
@@ -122,7 +123,7 @@ export default function SpecialistPage({ params }: PageProps<"/specialists/[slug
     <Suspense
       fallback={
         <>
-          <div className="h-56 bg-brand-deep" />
+          <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
           <div className="container-page grid gap-10 py-14 lg:grid-cols-[18rem_1fr]">
             <Skeleton className="aspect-square" />
             <Skeleton className="h-96" />

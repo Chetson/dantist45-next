@@ -1,20 +1,20 @@
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import type { StaffListItem } from "@/lib/data/content";
 import { fullName, initials } from "@/lib/format";
 
 export function StaffAvatar({
   person,
-  className = "size-20 text-2xl",
+  className = "size-28 text-3xl",
 }: {
-  person: StaffListItem;
+  person: Pick<StaffListItem, "firstName" | "lastName">;
   className?: string;
 }) {
   // Фото сотрудников появятся после получения согласий — пока инициалы.
   return (
     <div
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-accent font-display text-white ${className}`}
+      className={`bg-sky-panel flex shrink-0 items-center justify-center rounded-full font-display font-extrabold text-white shadow-lg shadow-accent-strong/30 ${className}`}
     >
       {initials(person)}
     </div>
@@ -24,41 +24,31 @@ export function StaffAvatar({
 export function StaffCard({ person }: { person: StaffListItem }) {
   const position = person.clinics[0]?.position ?? person.specialties;
   return (
-    <article className="group relative flex h-full flex-col rounded-3xl border border-line bg-white p-6 transition-shadow hover:shadow-xl hover:shadow-brand-deep/5">
-      <div className="flex items-start gap-4">
-        <StaffAvatar person={person} />
-        <div className="min-w-0">
-          <h3 className="font-display text-xl leading-snug text-brand-deep">
-            <Link href={`/specialists/${person.slug}`} className="after:absolute after:inset-0">
-              {fullName(person)}
-            </Link>
-          </h3>
-          <p className="mt-1 text-sm text-muted first-letter:uppercase">{person.specialties}</p>
-        </div>
-      </div>
-
+    <article className="card group relative flex h-full flex-col items-center p-7 text-center">
+      <span className="absolute top-6 right-6 text-muted transition-colors group-hover:text-brand">
+        <ArrowUpRight className="size-5" aria-hidden="true" />
+      </span>
+      <StaffAvatar person={person} />
+      <h3 className="mt-6 font-display text-xl leading-tight font-extrabold tracking-tight text-brand-deep">
+        <Link href={`/specialists/${person.slug}`} className="after:absolute after:inset-0">
+          {fullName(person)}
+        </Link>
+      </h3>
+      <p className="mt-2 text-sm text-muted first-letter:uppercase">{person.specialties}</p>
       {position !== person.specialties && (
-        <p className="mt-4 rounded-xl bg-brand-soft px-3 py-2 text-sm text-brand first-letter:uppercase">
-          {position}
-        </p>
+        <p className="mt-3 text-sm font-semibold text-brand-deep first-letter:uppercase">{position}</p>
       )}
-
-      <ul className="mt-4 flex flex-wrap gap-2">
+      <ul className="mt-auto flex flex-wrap justify-center gap-2 pt-5">
         {person.clinics.map(({ clinic }) => (
           <li
             key={clinic.slug}
-            className="inline-flex items-center gap-1 rounded-full border border-line px-3 py-1 text-xs text-muted"
+            className="inline-flex items-center gap-1 rounded-full bg-brand-soft px-3 py-1 text-xs text-brand-deep"
           >
-            <MapPin className="size-3.5 text-accent" aria-hidden="true" />
+            <MapPin className="size-3.5 text-brand" aria-hidden="true" />
             {clinic.name}
           </li>
         ))}
       </ul>
-
-      <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-brand">
-        Образование и квалификация
-        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-      </span>
     </article>
   );
 }

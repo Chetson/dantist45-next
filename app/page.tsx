@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Announcements } from "@/components/home/Announcements";
 import { Hero } from "@/components/home/Hero";
-import { StructuredData } from "@/components/home/StructuredData";
 import {
   About,
   CallPhones,
@@ -9,15 +8,17 @@ import {
   ClinicsGrid,
   ClinicsSection,
   DoctorsWidget,
-  Features,
   PatientInfo,
   ServicesGrid,
   ServicesSection,
+  WhyUs,
 } from "@/components/home/Sections";
+import { StructuredData } from "@/components/home/StructuredData";
 import { CardGridSkeleton } from "@/components/ui/Skeleton";
 
-// Порядок блоков — refactor-plan.md, раздел 3. Статичные части попадают
-// в пререндер, блоки с данными из БД подгружаются через Suspense.
+// Порядок блоков — refactor-plan.md, раздел 3; оформление — по макету
+// «Dental Clinic» (Behance). Статичные части попадают в пререндер,
+// блоки с данными из БД подгружаются через Suspense.
 export default function Home() {
   return (
     <>
@@ -28,12 +29,12 @@ export default function Home() {
       <Suspense>
         <Announcements />
       </Suspense>
-      <Features />
       <ServicesSection>
         <Suspense fallback={<CardGridSkeleton count={4} className="h-72" />}>
           <ServicesGrid />
         </Suspense>
       </ServicesSection>
+      <WhyUs />
       <About />
       <Suspense>
         <DoctorsWidget />

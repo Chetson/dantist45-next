@@ -7,11 +7,11 @@ import { mainNav } from "@/components/layout/nav";
 export default function NotFound() {
   return (
     <section className="container-page flex flex-col items-center py-24 text-center">
-      <span className="flex size-20 items-center justify-center rounded-3xl bg-brand-soft text-brand">
+      <span className="flex size-20 items-center justify-center rounded-full bg-brand text-white glow">
         <ToothIcon className="size-10" />
       </span>
-      <p className="mt-8 font-display text-6xl text-accent">404</p>
-      <h1 className="mt-3 font-display text-3xl text-brand-deep">Страница не найдена</h1>
+      <p className="mt-8 font-display text-6xl text-brand font-extrabold tracking-tight">404</p>
+      <h1 className="mt-3 font-display text-3xl text-brand-deep font-extrabold tracking-tight">Страница не найдена</h1>
       <p className="mt-4 max-w-md text-muted">
         Возможно, страница была перемещена или вы ошиблись в адресе. Воспользуйтесь разделами сайта:
       </p>
@@ -20,7 +20,7 @@ export default function NotFound() {
           <li key={item.href}>
             <Link
               href={item.href}
-              className="block rounded-full border border-line px-4 py-2 text-sm hover:border-brand hover:text-brand"
+              className="block rounded-full bg-white/70 ring-1 ring-white px-4 py-2 text-sm hover:text-brand"
             >
               {item.label}
             </Link>

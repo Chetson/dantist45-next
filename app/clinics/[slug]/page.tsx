@@ -33,28 +33,28 @@ async function ClinicDetails({ slug }: { slug: string }) {
       />
       <div className="container-page grid gap-10 py-14 lg:grid-cols-[22rem_1fr]">
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-          <div className="space-y-5 rounded-3xl bg-brand-deep p-7 text-white">
+          <div className="bg-sky-panel space-y-5 rounded-[var(--radius-panel)] p-7 text-white shadow-lg shadow-accent-strong/30">
             <div className="flex gap-3">
-              <MapPin className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
+              <MapPin className="mt-0.5 size-5 shrink-0 text-white" aria-hidden="true" />
               <div>
                 <p>{clinic.address}</p>
                 <p className="mt-2 flex gap-4 text-sm">
-                  <a href={maps.yandex} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                  <a href={maps.yandex} target="_blank" rel="noopener noreferrer" className="text-white underline-offset-4 hover:underline">
                     Яндекс Карты
                   </a>
-                  <a href={maps.twoGis} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                  <a href={maps.twoGis} target="_blank" rel="noopener noreferrer" className="text-white underline-offset-4 hover:underline">
                     2ГИС
                   </a>
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Phone className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
+              <Phone className="mt-0.5 size-5 shrink-0 text-white" aria-hidden="true" />
               {clinic.phones.length > 0 ? (
                 <ul className="space-y-1">
                   {clinic.phones.map((phone) => (
                     <li key={phone.id}>
-                      <a href={`tel:${phone.number}`} className="font-semibold hover:text-accent">
+                      <a href={`tel:${phone.number}`} className="font-semibold hover:underline">
                         {formatPhone(phone.number)}
                       </a>
                       <span className="ml-2 text-sm text-white/60">{phone.label}</span>
@@ -66,7 +66,7 @@ async function ClinicDetails({ slug }: { slug: string }) {
               )}
             </div>
             <div className="flex gap-3 [&_dt]:text-white/60">
-              <Clock className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
+              <Clock className="mt-0.5 size-5 shrink-0 text-white" aria-hidden="true" />
               <ClinicSchedule schedule={clinic.schedule} />
             </div>
           </div>
@@ -75,7 +75,7 @@ async function ClinicDetails({ slug }: { slug: string }) {
         <div className="space-y-14">
           {clinic.staff.length > 0 && (
             <section aria-labelledby="staff-title">
-              <h2 id="staff-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl">
+              <h2 id="staff-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
                 Специалисты филиала
               </h2>
               <ul className="grid gap-4 sm:grid-cols-2">
@@ -83,11 +83,11 @@ async function ClinicDetails({ slug }: { slug: string }) {
                   <li key={staff.id}>
                     <Link
                       href={`/specialists/${staff.slug}`}
-                      className="flex items-center gap-4 rounded-2xl border border-line p-4 transition-colors hover:border-brand hover:bg-brand-soft/40"
+                      className="card flex items-center gap-4 rounded-[1.75rem] p-4 transition-transform hover:-translate-y-0.5"
                     >
                       <span
                         aria-hidden="true"
-                        className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-accent font-display text-white"
+                        className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-sky-panel font-display text-white font-extrabold tracking-tight"
                       >
                         {initials(staff)}
                       </span>
@@ -103,14 +103,14 @@ async function ClinicDetails({ slug }: { slug: string }) {
           )}
 
           <section aria-labelledby="license-title">
-            <h2 id="license-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl">
+            <h2 id="license-title" className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
               Лицензия по этому адресу
             </h2>
             {clinic.licenseAnnexes.length > 0 ? (
               clinic.licenseAnnexes.map((annex) => (
-                <article key={annex.id} className="rounded-3xl border border-line p-7">
+                <article key={annex.id} className="card p-7">
                   <p className="flex items-center gap-2 font-semibold text-brand">
-                    <ShieldCheck className="size-5 text-accent" aria-hidden="true" />
+                    <ShieldCheck className="size-5 text-brand" aria-hidden="true" />
                     {annex.number} к лицензии № {annex.license.number} от {formatDate(annex.license.issuedAt)}
                   </p>
                   <p className="mt-4 text-[15px] leading-relaxed text-foreground/85">{annex.works}</p>
@@ -124,7 +124,7 @@ async function ClinicDetails({ slug }: { slug: string }) {
                 </article>
               ))
             ) : (
-              <p className="rounded-2xl bg-surface-muted p-5 text-muted">
+              <p className="card rounded-[1.75rem] p-5 text-muted">
                 Приложение к лицензии для этого адреса будет опубликовано в ближайшее время.
                 Все сведения о лицензии — в разделе{" "}
                 <Link href="/licenses" className="text-brand underline">
@@ -145,7 +145,7 @@ export default function ClinicPage({ params }: PageProps<"/clinics/[slug]">) {
     <Suspense
       fallback={
         <>
-          <div className="h-56 bg-brand-deep" />
+          <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
           <div className="container-page grid gap-10 py-14 lg:grid-cols-[22rem_1fr]">
             <Skeleton className="h-80" />
             <Skeleton className="h-96" />

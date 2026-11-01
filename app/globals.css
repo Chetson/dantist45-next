@@ -1,27 +1,32 @@
 @import "tailwindcss";
 
 /*
- * Палитра по мотивам dentist.madethemes.com: глубокий морской синий,
- * бирюзовый акцент, светлые голубые подложки.
+ * Палитра по макету «Dental Clinic» (Behance): холодный светлый фон,
+ * лавандовый акцент (#8A95D2), небесно-голубые градиенты (#A2D0EF → #719ACB),
+ * графитовый текст (#3B495D). Лаванда и голубой слегка затемнены,
+ * чтобы белый текст на кнопках и панелях оставался читаемым.
  */
 :root {
-  --background: #ffffff;
-  --foreground: #10293b;
-  --muted: #5a6f80;
-  --line: #dbe7ee;
+  --background: #eef2f8;
+  --foreground: #3b495d;
+  --muted: #7d889b;
+  --line: #e1e7f1;
   --surface: #ffffff;
-  --surface-muted: #f3f8fb;
+  --surface-muted: #f5f7fc;
 
-  --brand: #0b5279;
-  --brand-strong: #083e5c;
-  --brand-deep: #052d44;
-  --brand-soft: #e5f2f7;
-  --accent: #27b0cf;
-  --accent-strong: #1793b0;
-  --accent-soft: #d8f1f7;
+  /* лаванда — кнопки, активные элементы, иконки */
+  --brand: #7d88cb;
+  --brand-strong: #6b76bf;
+  --brand-soft: #e8ebf8;
+  /* графит — заголовки и тёмные элементы */
+  --brand-deep: #3b495d;
+  /* небесно-голубой — градиентные панели */
+  --accent: #8cb9e6;
+  --accent-strong: #6f97cc;
+  --accent-soft: #e2eff9;
 
-  --warning: #9a4b06;
-  --warning-soft: #fff4dc;
+  --warning: #9a5b06;
+  --warning-soft: #fff5e1;
   --critical: #b42318;
   --critical-soft: #fde8e7;
 }
@@ -35,8 +40,8 @@
   --color-surface-muted: var(--surface-muted);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
-  --color-brand-deep: var(--brand-deep);
   --color-brand-soft: var(--brand-soft);
+  --color-brand-deep: var(--brand-deep);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
@@ -44,13 +49,14 @@
   --color-warning-soft: var(--warning-soft);
   --color-critical: var(--critical);
   --color-critical-soft: var(--critical-soft);
-  --font-sans: var(--font-golos);
-  --font-display: var(--font-playfair);
+  --font-sans: var(--font-raleway);
+  --font-display: var(--font-manrope);
+  --radius-panel: 2.25rem;
 }
 
 @utility container-page {
   width: 100%;
-  max-width: 80rem;
+  max-width: 82rem;
   margin-inline: auto;
   padding-inline: 1rem;
 
@@ -59,25 +65,62 @@
   }
 }
 
+/* Небесно-голубая градиентная панель (hero, «почему мы», призыв позвонить). */
+@utility bg-sky-panel {
+  background:
+    radial-gradient(120% 90% at 0% 0%, #a9d5f3 0%, transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, #9dccef 0%, transparent 55%),
+    linear-gradient(135deg, #86b2e3 0%, #6f97cc 55%, #82b0e2 100%);
+}
+
+/* Белая «стеклянная» карточка. */
+@utility card {
+  border-radius: var(--radius-panel);
+  background: rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.9),
+    0 24px 60px -32px rgb(59 73 93 / 0.35);
+  backdrop-filter: blur(12px);
+}
+
+/* Полупрозрачная карточка на градиентной панели. */
+@utility card-glass {
+  border-radius: var(--radius-panel);
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35);
+  backdrop-filter: blur(8px);
+}
+
+/* Лавандовое свечение под кнопками и иконками. */
+@utility glow {
+  box-shadow: 0 12px 28px -10px rgb(125 136 203 / 0.85);
+}
+
+/* Крупные заголовки макета: строчные, плотные, тяжёлые. */
+@utility heading-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  text-transform: lowercase;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 7rem;
   }
 
   body {
     background: var(--background);
     color: var(--foreground);
-  }
-
-  /* У Playfair по умолчанию старостильные цифры — номера лицензий и цены
-     читаются хуже. */
-  .font-display {
+    /* У Raleway по умолчанию старостильные цифры — для цен и номеров
+       документов нужны обычные. */
     font-variant-numeric: lining-nums;
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--brand);
     outline-offset: 2px;
   }
 }

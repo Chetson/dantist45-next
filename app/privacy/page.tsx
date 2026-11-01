@@ -38,7 +38,7 @@ export default function PrivacyPage() {
       <div className="container-page max-w-3xl space-y-10 py-14">
         {sections.map((section) => (
           <section key={section.title}>
-            <h2 className="font-display text-2xl text-brand-deep">{section.title}</h2>
+            <h2 className="font-display text-2xl text-brand-deep font-extrabold tracking-tight">{section.title}</h2>
             <p className="mt-3 leading-relaxed text-foreground/85">{section.text}</p>
           </section>
         ))}

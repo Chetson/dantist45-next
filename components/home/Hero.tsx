@@ -1,127 +1,87 @@
 import Link from "next/link";
-import { ArrowRight, Clock, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Phone, Plus } from "lucide-react";
 import { Suspense } from "react";
-import { buttonClass } from "@/components/ui/button";
+import { buttonClass, iconCircle } from "@/components/ui/button";
 import { ToothIcon } from "@/components/ui/icons";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { getStaff } from "@/lib/data/content";
 import { getClinics } from "@/lib/data/site";
-import { formatPhone, plural } from "@/lib/format";
+import { plural } from "@/lib/format";
 
-async function Facts() {
-  const [clinics, staff] = await Promise.all([getClinics(), getStaff()]);
-  const doctors = staff.filter((s) => s.kind === "DOCTOR").length;
-  const facts = [
-    { value: "2003", label: "год основания клиники" },
-    {
-      value: String(clinics.length),
-      label: `${plural(clinics.length, ["филиал", "филиала", "филиалов"])} в Кургане`,
-    },
-    {
-      value: String(doctors),
-      label: `${plural(doctors, ["врач", "врача", "врачей"])} и зубных врачей`,
-    },
-  ];
-
+function StatCard({ value, label, className = "" }: { value: string; label: string; className?: string }) {
   return (
-    <dl className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8">
-      {facts.map((fact) => (
-        <div key={fact.label}>
-          <dt className="sr-only">{fact.label}</dt>
-          <dd className="font-display text-3xl text-accent sm:text-4xl">{fact.value}</dd>
-          <dd className="mt-1 text-sm text-white/65">{fact.label}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className={`relative w-60 rounded-[1.75rem] bg-white/90 p-5 shadow-xl shadow-brand-deep/10 ${className}`}>
+      <p className="font-display text-3xl font-bold tracking-tight text-brand-deep">{value}</p>
+      <p className="mt-1 text-sm leading-snug text-muted">{label}</p>
+      <span className={`${iconCircle} absolute -bottom-4 left-8 size-8 ring-4 ring-white/60`}>
+        <Plus className="size-4" aria-hidden="true" />
+      </span>
+    </div>
   );
 }
 
-async function ClinicsPanel() {
-  const clinics = await getClinics();
+async function Stats() {
+  const [clinics, staff] = await Promise.all([getClinics(), getStaff()]);
+  const doctors = staff.filter((s) => s.kind === "DOCTOR").length;
+
   return (
-    <ul className="space-y-4">
-      {clinics.map((clinic) => {
-        const phone = clinic.phones[0];
-        const weekdays = clinic.schedule[0];
-        return (
-          <li key={clinic.id} className="rounded-2xl bg-white p-5 text-foreground shadow-lg shadow-brand-deep/20">
-            <Link href={`/clinics/${clinic.slug}`} className="font-display text-lg text-brand-deep hover:text-brand">
-              {clinic.name}
-            </Link>
-            <p className="mt-2 flex gap-2 text-sm text-muted">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
-              {clinic.address.replace(/^\d{6},\s*/, "")}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-              {phone && (
-                <a href={`tel:${phone.number}`} className="flex items-center gap-2 font-semibold text-brand">
-                  <Phone className="size-4" aria-hidden="true" />
-                  {formatPhone(phone.number)}
-                </a>
-              )}
-              {weekdays?.opensAt && (
-                <span className="flex items-center gap-2 text-muted">
-                  <Clock className="size-4 text-accent" aria-hidden="true" />
-                  {weekdays.days}: {weekdays.opensAt}–{weekdays.closesAt}
-                </span>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+    <div className="hidden flex-col justify-center gap-8 lg:flex">
+      <StatCard value="с 2003" label="года заботимся о здоровье зубов жителей Кургана" className="self-start" />
+      <StatCard
+        value={`${doctors}`}
+        label={`${plural(doctors, ["врач", "врача", "врачей"])} и зубных врачей ведут приём`}
+        className="self-end"
+      />
+      <StatCard
+        value={`${clinics.length}`}
+        label={`${plural(clinics.length, ["филиал", "филиала", "филиалов"])} клиники в Кургане`}
+        className="ml-12 self-start"
+      />
+    </div>
   );
 }
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-brand-deep pb-24 text-white">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-32 size-[32rem] rounded-full bg-brand/60 blur-3xl" />
-        <div className="absolute right-0 -bottom-40 size-[28rem] rounded-full bg-accent/20 blur-3xl" />
-        <ToothIcon className="absolute top-10 right-[8%] size-[26rem] text-white/[0.04]" />
-      </div>
-
-      <div className="container-page relative grid items-center gap-12 pt-16 sm:pt-24 lg:grid-cols-[1.25fr_1fr]">
-        <div>
-          <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-accent uppercase">
-            <span className="size-1.5 rounded-full bg-accent" />
-            Стоматология в Кургане с 2003 года
-          </p>
-          <h1 className="font-display text-4xl leading-[1.1] sm:text-6xl">
-            Бережное лечение зубов для всей семьи
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-white/75">
-            Терапия, хирургия, ортопедия и профессиональная гигиена. Консультация,
-            лечение и протезирование — у специалистов одной клиники.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link href="/services" className={buttonClass("accent", "lg")}>
-              Услуги и цены
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
-            <Link href="/specialists" className={buttonClass("ghostLight", "lg")}>
-              Наши специалисты
-            </Link>
-          </div>
-          <Suspense fallback={<div className="mt-12 h-24 max-w-lg" />}>
-            <Facts />
-          </Suspense>
+    <section className="px-3 pt-4 sm:px-4">
+      <div className="bg-sky-panel relative mx-auto max-w-[82rem] overflow-hidden rounded-[2.5rem] text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-24 right-1/4 size-96 rounded-full bg-white/20 blur-3xl" />
+          <ToothIcon className="absolute -right-16 -bottom-24 size-[34rem] stroke-[0.6] text-white/25" />
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
-          <p className="mb-4 px-1 text-sm font-semibold tracking-wide text-white/70 uppercase">
-            Запись по телефону
-          </p>
-          <Suspense
-            fallback={
-              <div className="space-y-4">
-                <Skeleton className="h-36 bg-white/10" />
-                <Skeleton className="h-36 bg-white/10" />
-              </div>
-            }
-          >
-            <ClinicsPanel />
+        <div className="relative grid gap-10 px-6 py-14 sm:px-12 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:px-16">
+          <div>
+            <h1 className="heading-xl text-5xl sm:text-7xl">
+              бережное лечение зубов для всей семьи
+            </h1>
+            <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/90">
+              Терапия, хирургия, ортопедия и профессиональная гигиена.{" "}
+              <strong className="font-bold">Консультация, лечение и протезирование</strong> — у специалистов
+              одной клиники.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <Link href="/services" className={buttonClass("primary", "lg")}>
+                Услуги и цены
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/clinics"
+                className="inline-flex items-center gap-3 rounded-full bg-white/90 py-2 pr-6 pl-2 text-sm leading-tight text-muted transition-colors hover:bg-white"
+              >
+                <span className={`${iconCircle} size-10`}>
+                  <Phone className="size-4" aria-hidden="true" />
+                </span>
+                <span>
+                  Запись на приём
+                  <br />
+                  по телефону филиала
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          <Suspense>
+            <Stats />
           </Suspense>
         </div>
       </div>

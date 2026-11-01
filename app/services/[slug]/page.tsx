@@ -30,6 +30,7 @@ async function Article({ slug }: { slug: string }) {
         title={article.title}
         crumbs={[{ href: "/services", label: "Услуги и цены" }]}
         current={article.title}
+        keepCase
       />
       <div className="container-page grid gap-12 py-14 lg:grid-cols-[1fr_20rem]">
         <article className="min-w-0">
@@ -37,7 +38,7 @@ async function Article({ slug }: { slug: string }) {
 
           {category && (
             <section className="mt-12" aria-labelledby="prices-title">
-              <h2 id="prices-title" className="mb-5 font-display text-2xl text-brand-deep">
+              <h2 id="prices-title" className="mb-5 font-display text-2xl text-brand-deep font-extrabold tracking-tight">
                 Цены: {category.name.toLowerCase()}
               </h2>
               <PriceTable services={category.services} caption={`Цены: ${category.name}`} />
@@ -50,8 +51,8 @@ async function Article({ slug }: { slug: string }) {
 
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
           {category && category.articles.length > 1 && (
-            <nav aria-label="Другие услуги направления" className="rounded-3xl border border-line p-6">
-              <h2 className="mb-3 font-display text-lg text-brand-deep">{category.name}</h2>
+            <nav aria-label="Другие услуги направления" className="card p-6">
+              <h2 className="mb-3 font-display text-lg text-brand-deep font-extrabold tracking-tight">{category.name}</h2>
               <ul className="space-y-1">
                 {category.articles.map((item) => (
                   <li key={item.slug}>
@@ -67,12 +68,12 @@ async function Article({ slug }: { slug: string }) {
               </ul>
             </nav>
           )}
-          <div className="rounded-3xl bg-brand-deep p-6 text-white">
-            <h2 className="font-display text-xl">Нужна консультация?</h2>
+          <div className="bg-sky-panel rounded-[var(--radius-panel)] p-6 text-white shadow-lg shadow-accent-strong/30">
+            <h2 className="font-display text-xl font-extrabold tracking-tight">Нужна консультация?</h2>
             <p className="mt-2 text-sm text-white/75">
               Позвоните в удобный филиал — администратор подберёт время приёма.
             </p>
-            <Link href="/clinics" className={`${buttonClass("accent", "md")} mt-5 w-full`}>
+            <Link href="/clinics" className={`${buttonClass("light", "md")} mt-5 w-full`}>
               Телефоны филиалов
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
@@ -88,7 +89,7 @@ export default function ServiceArticlePage({ params }: PageProps<"/services/[slu
     <Suspense
       fallback={
         <>
-          <div className="h-56 bg-brand-deep" />
+          <div className="container-page h-56 pt-12"><Skeleton className="h-24 max-w-2xl" /></div>
           <div className="container-page space-y-4 py-14">
             <Skeleton className="h-6 w-2/3" />
             <Skeleton className="h-40" />

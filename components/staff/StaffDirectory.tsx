@@ -31,7 +31,7 @@ export function StaffDirectory({ staff, clinics }: Props) {
             type="button"
             aria-pressed={clinic === tab.slug}
             onClick={() => setClinic(tab.slug)}
-            className="rounded-full border border-line px-5 py-2 text-sm font-medium transition-colors hover:border-brand hover:text-brand aria-pressed:border-brand aria-pressed:bg-brand aria-pressed:text-white"
+            className="rounded-full bg-white/70 ring-1 ring-white px-5 py-2 text-sm font-medium transition-colors hover:text-brand aria-pressed:bg-brand aria-pressed:text-white aria-pressed:glow"
           >
             {tab.name}
           </button>
@@ -43,11 +43,11 @@ export function StaffDirectory({ staff, clinics }: Props) {
         if (people.length === 0) return null;
         return (
           <section key={group.kind} aria-labelledby={`group-${group.kind}`}>
-            <h2 id={`group-${group.kind}`} className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl">
+            <h2 id={`group-${group.kind}`} className="mb-6 font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
               {group.title}
-              <span className="ml-3 align-middle text-base font-sans text-muted">{people.length}</span>
+              <span className="ml-3 align-middle font-sans text-base font-medium text-muted">{people.length}</span>
             </h2>
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {people.map((person) => (
                 <li key={person.id}>
                   <StaffCard person={person} />

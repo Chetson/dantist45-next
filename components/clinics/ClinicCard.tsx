@@ -1,21 +1,22 @@
 import Link from "next/link";
-import { ArrowRight, Clock, MapPin, Phone, Users } from "lucide-react";
+import { ArrowUpRight, Clock, MapPin, Phone } from "lucide-react";
+import { iconCircle } from "@/components/ui/button";
 import type { getClinics } from "@/lib/data/site";
 import { mapLinks } from "@/lib/data/site";
 import { formatPhone, plural } from "@/lib/format";
 
 type Clinic = Awaited<ReturnType<typeof getClinics>>[number];
 
-export function ClinicSchedule({ schedule }: { schedule: Clinic["schedule"] }) {
+export function ClinicSchedule({ schedule, inverted }: { schedule: Clinic["schedule"]; inverted?: boolean }) {
   if (schedule.length === 0) {
-    return <p className="text-muted">Режим работы уточняйте по телефону</p>;
+    return <p className={inverted ? "text-white/85" : "text-muted"}>Режим работы уточняйте по телефону</p>;
   }
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
       {schedule.map((row) => (
         <div key={row.id} className="contents">
-          <dt className="text-muted">{row.days}</dt>
-          <dd className="font-medium">
+          <dt className={inverted ? "text-white/80" : "text-muted"}>{row.days}</dt>
+          <dd className="font-semibold">
             {row.opensAt && row.closesAt ? `${row.opensAt} — ${row.closesAt}` : "выходной"}
           </dd>
         </div>
@@ -24,64 +25,72 @@ export function ClinicSchedule({ schedule }: { schedule: Clinic["schedule"] }) {
   );
 }
 
+/** Филиал в духе блока «можете найти нас по адресу»: адрес + карточки «контакты» и «график». */
 export function ClinicCard({ clinic }: { clinic: Clinic }) {
   const maps = mapLinks(clinic.address);
   const staffCount = clinic._count.staff;
 
   return (
-    <article className="flex h-full flex-col rounded-3xl border border-line bg-white p-7">
-      <h3 className="font-display text-2xl text-brand-deep">{clinic.name}</h3>
-
-      <ul className="mt-5 space-y-4 text-[15px]">
-        <li className="flex gap-3">
-          <MapPin className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
-          <div>
-            <p>{clinic.address}</p>
-            <p className="mt-1 flex gap-3 text-sm">
-              <a href={maps.yandex} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
+    <article className="flex h-full flex-col gap-5">
+      <div>
+        <h3 className="heading-xl text-3xl text-brand-deep sm:text-4xl">
+          <Link href={`/clinics/${clinic.slug}`} className="hover:text-brand">
+            {clinic.name}
+          </Link>
+        </h3>
+        <div className="mt-5 flex items-start gap-4">
+          <span className={`${iconCircle} size-11`}>
+            <MapPin className="size-5" aria-hidden="true" />
+          </span>
+          <div className="pt-1">
+            <p className="text-[15px]">{clinic.address}</p>
+            <p className="mt-1 flex gap-4 text-sm">
+              <a href={maps.yandex} target="_blank" rel="noopener noreferrer" className="font-medium text-brand hover:underline">
                 Яндекс Карты
               </a>
-              <a href={maps.twoGis} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
+              <a href={maps.twoGis} target="_blank" rel="noopener noreferrer" className="font-medium text-brand hover:underline">
                 2ГИС
               </a>
             </p>
           </div>
-        </li>
-        <li className="flex gap-3">
-          <Phone className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
+        </div>
+      </div>
+
+      <div className="grid flex-1 gap-4 sm:grid-cols-2">
+        <div className="card p-6">
+          <Phone className="size-5 text-brand-deep" aria-hidden="true" />
+          <p className="mt-6 font-display text-lg font-extrabold tracking-tight text-brand-deep">контакты</p>
           {clinic.phones.length > 0 ? (
-            <div className="flex flex-col gap-1">
+            <ul className="mt-2 space-y-1 text-[15px]">
               {clinic.phones.map((phone) => (
-                <a key={phone.id} href={`tel:${phone.number}`} className="font-medium hover:text-brand">
-                  {formatPhone(phone.number)}
-                  <span className="ml-2 text-sm font-normal text-muted">{phone.label}</span>
-                </a>
+                <li key={phone.id}>
+                  <a href={`tel:${phone.number}`} className="hover:text-brand">
+                    {formatPhone(phone.number)}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
-            <p className="text-muted">Телефон филиала уточняется</p>
+            <p className="mt-2 text-[15px] text-muted">Телефон филиала уточняется</p>
           )}
-        </li>
-        <li className="flex gap-3">
-          <Clock className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
-          <ClinicSchedule schedule={clinic.schedule} />
-        </li>
-        {staffCount > 0 && (
-          <li className="flex gap-3">
-            <Users className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden="true" />
-            <p>
-              {staffCount} {plural(staffCount, ["специалист", "специалиста", "специалистов"])}
-            </p>
-          </li>
-        )}
-      </ul>
+        </div>
+        <div className="bg-sky-panel rounded-[var(--radius-panel)] p-6 text-white shadow-lg shadow-accent-strong/30">
+          <Clock className="size-5" aria-hidden="true" />
+          <p className="mt-6 font-display text-lg font-extrabold tracking-tight">график</p>
+          <div className="mt-2 text-[15px]">
+            <ClinicSchedule schedule={clinic.schedule} inverted />
+          </div>
+        </div>
+      </div>
 
       <Link
         href={`/clinics/${clinic.slug}`}
-        className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-brand hover:gap-2.5"
+        className="inline-flex items-center gap-1.5 self-start text-sm font-semibold text-brand hover:gap-2.5"
       >
-        Подробнее о филиале
-        <ArrowRight className="size-4" aria-hidden="true" />
+        {staffCount > 0
+          ? `${staffCount} ${plural(staffCount, ["специалист", "специалиста", "специалистов"])} и лицензия филиала`
+          : "Подробнее о филиале"}
+        <ArrowUpRight className="size-4" aria-hidden="true" />
       </Link>
     </article>
   );

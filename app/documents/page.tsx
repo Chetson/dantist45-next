@@ -41,7 +41,7 @@ async function DocumentsList() {
         if (items.length === 0) return null;
         return (
           <section key={group.key} aria-labelledby={`group-${group.key}`}>
-            <h2 id={`group-${group.key}`} className="font-display text-2xl text-brand-deep sm:text-3xl">
+            <h2 id={`group-${group.key}`} className="font-display text-2xl text-brand-deep sm:text-3xl font-extrabold tracking-tight">
               {group.title}
             </h2>
             <p className="mt-2 text-muted">{group.lead}</p>
@@ -49,8 +49,8 @@ async function DocumentsList() {
               {items.map((doc) => {
                 const href = doc.file ?? doc.url;
                 return (
-                  <li key={doc.id} className="flex gap-4 rounded-2xl border border-line p-5">
-                    <FileText className="mt-0.5 size-6 shrink-0 text-accent" aria-hidden="true" />
+                  <li key={doc.id} className="flex gap-4 card rounded-[1.75rem] p-5">
+                    <FileText className="mt-0.5 size-6 shrink-0 text-brand" aria-hidden="true" />
                     <div>
                       <p className="font-medium">{doc.title}</p>
                       {href ? (
@@ -100,8 +100,8 @@ export default function DocumentsPage() {
         </Suspense>
 
         <section className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl bg-brand-soft p-7">
-            <h2 className="font-display text-xl text-brand-deep">Бесплатная медицинская помощь</h2>
+          <div className="card p-7">
+            <h2 className="font-display text-xl text-brand-deep font-extrabold tracking-tight">Бесплатная медицинская помощь</h2>
             <p className="mt-3 text-[15px] text-foreground/80">
               Гражданам гарантируется бесплатная медицинская помощь в рамках Территориальной
               программы государственных гарантий Курганской области. Узнать, где и как её получить,
@@ -109,8 +109,8 @@ export default function DocumentsPage() {
               Курганской области.
             </p>
           </div>
-          <div className="rounded-3xl bg-brand-soft p-7">
-            <h2 className="font-display text-xl text-brand-deep">Если права нарушены</h2>
+          <div className="card p-7">
+            <h2 className="font-display text-xl text-brand-deep font-extrabold tracking-tight">Если права нарушены</h2>
             <p className="mt-3 text-[15px] text-foreground/80">
               Порядок обращения и контакты органов, контролирующих работу клиники, — на странице{" "}
               <Link href="/regulators" className="font-medium text-brand underline">

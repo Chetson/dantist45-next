@@ -1,36 +1,32 @@
+import type { ReactNode } from "react";
+
 type Props = {
-  eyebrow?: string;
   title: string;
-  lead?: string;
-  align?: "center" | "left";
-  /** Для тёмного фона */
+  /** Короткий поясняющий текст справа от заголовка (как в макете). */
+  note?: ReactNode;
+  /** Иконка-таблетка перед поясняющим текстом */
+  noteIcon?: ReactNode;
+  /** Для градиентной панели */
   inverted?: boolean;
+  as?: "h1" | "h2";
 };
 
-export function SectionHeading({ eyebrow, title, lead, align = "center", inverted }: Props) {
-  const centered = align === "center";
+/** Заголовок секции: крупный строчный текст слева, пояснение справа. */
+export function SectionHeading({ title, note, noteIcon, inverted, as: Tag = "h2" }: Props) {
   return (
-    <div className={`max-w-2xl ${centered ? "mx-auto text-center" : ""}`}>
-      {eyebrow && (
-        <p
-          className={`mb-4 inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase ${
-            inverted ? "bg-white/10 text-accent" : "bg-brand-soft text-brand"
-          }`}
-        >
-          {eyebrow}
-        </p>
-      )}
-      <h2
-        className={`font-display text-3xl leading-tight sm:text-4xl ${
-          inverted ? "text-white" : "text-brand-deep"
-        }`}
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+      <Tag
+        className={`heading-xl text-4xl sm:text-5xl lg:text-6xl ${inverted ? "text-white" : "text-brand-deep"}`}
       >
         {title}
-      </h2>
-      {lead && (
-        <p className={`mt-4 text-base sm:text-lg ${inverted ? "text-white/75" : "text-muted"}`}>
-          {lead}
-        </p>
+      </Tag>
+      {note && (
+        <div className="flex gap-4 lg:pt-3">
+          {noteIcon}
+          <p className={`max-w-sm text-[15px] leading-relaxed ${inverted ? "text-white/80" : "text-muted"}`}>
+            {note}
+          </p>
+        </div>
       )}
     </div>
   );
