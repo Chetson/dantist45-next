@@ -11,27 +11,28 @@
 | Стили | Tailwind CSS v4 |
 | База данных | PostgreSQL |
 | ORM | Prisma |
-| Инфраструктура БД | Docker (Dockerfile / docker-compose) |
+| Инфраструктура БД | Docker Compose (`docker-compose.yml`) |
 | Клиентское состояние и запросы | TanStack Query |
 | Виртуализация списков | TanStack Virtual |
 
 ## База данных: PostgreSQL
 
 - Используется PostgreSQL как основная СУБД.
-- БД разворачивается локально в Docker-контейнере. Dockerfile (и при необходимости `docker-compose.yml`) в проекте ещё **не создан** — это одна из ближайших задач.
-- Параметры подключения хранятся в переменных окружения (`.env.local`, не коммитится; пример — `.env.example`), например `DATABASE_URL`.
+- БД разворачивается локально в Docker-контейнере из `docker-compose.yml` (сервис `postgres`, `npm run db:up`).
+- Параметры подключения хранятся в переменных окружения (`.env`, не коммитится; пример — `.env.example`; его читают docker compose, Prisma CLI и Next.js), например `DATABASE_URL`.
 - Данные хранятся в именованном Docker volume, чтобы переживать пересоздание контейнера.
 - Доступ к БД выполняется только на сервере (Server Components, Route Handlers, Server Actions). Клиент к БД напрямую не обращается.
 - Для работы с БД используется Prisma ORM: схема описывается в `prisma/schema.prisma`, типобезопасный Prisma Client используется для запросов.
 - Миграции схемы создаются через Prisma Migrate (`prisma migrate dev` локально, `prisma migrate deploy` в окружениях) и версионируются в репозитории.
 - Prisma Client создаётся единым экземпляром (singleton) в серверном модуле, чтобы не плодить соединения при hot reload в dev.
 
-### План по Docker
+### Prisma 7
 
-1. Создать `Dockerfile` / `docker-compose.yml` с сервисом `postgres`.
-2. Пробросить порт, задать пользователя, пароль и имя БД через переменные окружения.
-3. Добавить volume для данных и healthcheck.
-4. Описать запуск в README / CLAUDE.md (`docker compose up -d`).
+- Конфигурация CLI — `prisma.config.ts` (путь к схеме, миграциям, seed, `DATABASE_URL`).
+- Клиент генерируется в `generated/prisma` (не коммитится, `postinstall` → `prisma generate`), импорт — `@/generated/prisma/client`.
+- Подключение через драйвер-адаптер `@prisma/adapter-pg`; синглтон — `lib/db.ts` (только сервер, `server-only`).
+- `prisma migrate dev` не запускает seed и generate автоматически — `npm run db:seed` отдельно.
+- `next build` пререндерит страницы с `'use cache'` и обращается к БД: на момент сборки база должна быть доступна, миграции и seed применены.
 
 ## Клиентское состояние: TanStack Query
 

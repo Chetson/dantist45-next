@@ -1,0 +1,332 @@
+// Схема БД сайта стоматологии «Дантист».
+// Модель данных описана в refactor-plan.md (раздел 10).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Организация и филиалы ──────────────────────────────────────────────
+
+/// Юридическое лицо. Всегда одна запись с id = 1.
+model Organization {
+  id           Int     @id @default(1)
+  fullName     String
+  shortName    String
+  ogrn         String
+  inn          String
+  legalAddress String?
+  /// Заведующий / руководитель медицинской организации
+  director     String?
+  updatedAt    DateTime @updatedAt
+}
+
+/// Филиал (место осуществления медицинской деятельности).
+model Clinic {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  address     String
+  mapUrl      String?
+  photo       String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  phones         ClinicPhone[]
+  schedule       ClinicSchedule[]
+  staff          StaffClinic[]
+  licenseAnnexes LicenseAnnex[]
+  announcements  Announcement[]
+}
+
+model ClinicPhone {
+  id        Int    @id @default(autoincrement())
+  clinicId  Int
+  /// «Городской», «Мобильный», «Регистратура»
+  label     String
+  /// В формате E.164: +73522222880
+  number    String
+  sortOrder Int    @default(0)
+
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+}
+
+model ClinicSchedule {
+  id        Int     @id @default(autoincrement())
+  clinicId  Int
+  /// «Пн — Пт», «Сб», «Вс»
+  days      String
+  /// «08:00»; null — выходной
+  opensAt   String?
+  closesAt  String?
+  sortOrder Int     @default(0)
+
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+}
+
+// ─── Сотрудники ─────────────────────────────────────────────────────────
+
+enum StaffKind {
+  DOCTOR
+  NURSE
+  OTHER
+}
+
+model Staff {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  lastName    String
+  firstName   String
+  middleName  String?
+  kind        StaffKind
+  /// Специализации для карточки: «стоматолог-ортопед, стоматолог-хирург»
+  specialties String?
+  photo       String?
+  bio         String?
+  isPublished Boolean   @default(true)
+  /// Показывать в виджете на главной (режим SELECTED)
+  showOnHome  Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  clinics   StaffClinic[]
+  documents StaffDocument[]
+}
+
+/// Должность сотрудника в конкретном филиале.
+model StaffClinic {
+  staffId  Int
+  clinicId Int
+  position String
+
+  staff  Staff  @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@id([staffId, clinicId])
+  @@index([clinicId])
+}
+
+enum StaffDocType {
+  /// Диплом об образовании
+  DIPLOMA
+  /// Диплом о профессиональной переподготовке
+  RETRAINING
+  /// Удостоверение о повышении квалификации
+  QUALIFICATION
+  /// Сертификат специалиста
+  CERTIFICATE
+  /// Свидетельство об аккредитации специалиста
+  ACCREDITATION
+}
+
+model StaffDocument {
+  id            Int          @id @default(autoincrement())
+  staffId       Int
+  type          StaffDocType
+  number        String?
+  issuedAt      DateTime?    @db.Date
+  organization  String?
+  specialty     String?
+  qualification String?
+  note          String?
+  sortOrder     Int          @default(0)
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@index([staffId])
+}
+
+// ─── Услуги и цены ──────────────────────────────────────────────────────
+
+model ServiceCategory {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  summary     String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  showOnHome  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  services Service[]
+  articles ServiceArticle[]
+}
+
+/// Строка прайса.
+model Service {
+  id          Int      @id @default(autoincrement())
+  categoryId  Int
+  /// Код по номенклатуре медицинских услуг (Приказ Минздрава № 804н)
+  code        String?
+  name        String
+  /// Цена в рублях
+  priceFrom   Int
+  /// Верхняя граница для «от … до …»
+  priceTo     Int?
+  /// «за зуб», «за челюсть»
+  unit        String?
+  note        String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+}
+
+/// Описательная статья об услуге (/services/[slug]).
+model ServiceArticle {
+  id          Int      @id @default(autoincrement())
+  categoryId  Int?
+  slug        String   @unique
+  title       String
+  /// Markdown
+  body        String
+  image       String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category ServiceCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([categoryId])
+}
+
+// ─── Уведомления ────────────────────────────────────────────────────────
+
+enum AnnouncementLevel {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model Announcement {
+  id        Int               @id @default(autoincrement())
+  title     String
+  /// Markdown, санитизируется при рендере
+  body      String
+  level     AnnouncementLevel @default(INFO)
+  isActive  Boolean           @default(true)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  sortOrder Int               @default(0)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  /// Пусто — уведомление для всех филиалов
+  clinics Clinic[]
+}
+
+// ─── Лицензии ───────────────────────────────────────────────────────────
+
+model License {
+  id          Int      @id @default(autoincrement())
+  number      String   @unique
+  issuedAt    DateTime @db.Date
+  issuer      String
+  activity    String
+  /// Бланк: «ЛО-45 № 0002393»
+  blankNumber String?
+  registryUrl String?
+  /// Пути к изображениям сканов (превью), по порядку страниц
+  scanImages  String[]
+  scanPdf     String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+
+  annexes LicenseAnnex[]
+}
+
+model LicenseAnnex {
+  id          Int      @id @default(autoincrement())
+  licenseId   Int
+  clinicId    Int?
+  /// «Приложение № 1»
+  number      String
+  blankNumber String?
+  address     String
+  /// Перечень работ (услуг) текстом
+  works       String
+  scanImages  String[]
+  scanPdf     String?
+  sortOrder   Int      @default(0)
+
+  license License @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  clinic  Clinic? @relation(fields: [clinicId], references: [id], onDelete: SetNull)
+
+  @@index([licenseId])
+  @@index([clinicId])
+}
+
+// ─── Контролирующие органы и документы ──────────────────────────────────
+
+model Regulator {
+  id             Int      @id @default(autoincrement())
+  name           String
+  shortName      String
+  description    String?
+  address        String
+  phones         String[]
+  hotline        String?
+  email          String?
+  website        String?
+  receptionHours String?
+  sortOrder      Int      @default(0)
+  isPublished    Boolean  @default(true)
+}
+
+enum DocumentGroup {
+  /// Нормативные документы
+  LAW
+  /// Образцы договоров
+  CONTRACT
+  /// Информация для пациентов
+  PATIENT_INFO
+}
+
+model Document {
+  id          Int           @id @default(autoincrement())
+  group       DocumentGroup
+  title       String
+  /// Внешняя ссылка на официальный источник
+  url         String?
+  /// Файл в /public/documents
+  file        String?
+  sortOrder   Int           @default(0)
+  isPublished Boolean       @default(true)
+}
+
+// ─── Настройки сайта ────────────────────────────────────────────────────
+
+enum DoctorsWidgetMode {
+  /// Виджет не выводится
+  HIDDEN
+  /// Первые N опубликованных врачей по sortOrder
+  AUTO
+  /// Только сотрудники с showOnHome
+  SELECTED
+}
+
+/// Всегда одна запись с id = 1.
+model SiteSettings {
+  id                 Int               @id @default(1)
+  doctorsWidgetMode  DoctorsWidgetMode @default(AUTO)
+  doctorsWidgetLimit Int               @default(6)
+  updatedAt          DateTime          @updatedAt
+}

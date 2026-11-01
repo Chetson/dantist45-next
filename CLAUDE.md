@@ -9,7 +9,15 @@ npm run dev     # next dev (http://localhost:3000)
 npm run build   # next build
 npm run start   # next start (после сборки)
 npm run lint    # eslint (flat конфиг в eslint.config.mjs)
+
+npm run db:up       # docker compose up -d postgres
+npm run db:migrate  # prisma migrate dev
+npm run db:seed     # prisma db seed — ПЕРЕЗАПИСЫВАЕТ контентные таблицы
+npm run db:studio   # prisma studio
+npm run import:legacy -- path/to/database.db  # перенос прайса из SQLite старого сайта
 ```
+
+Первый запуск: `cp .env.example .env`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed`, `npm run dev`.
 
 Тестовый раннер не настроен.
 
@@ -19,7 +27,12 @@ npm run lint    # eslint (flat конфиг в eslint.config.mjs)
 
 ## Архитектура
 
-Свежий шаблон `create-next-app` с использованием App Router (директория `app/`: `layout.tsx`, `page.tsx`, `globals.css`), строгий режим TypeScript, псевдоним пути `@/*` → корень репозитория.
+App Router, строгий TypeScript, псевдоним `@/*` → корень репозитория. Стек и подходы — [spec.md](spec.md), план переработки сайта — [refactor-plan.md](refactor-plan.md).
+
+- `prisma/schema.prisma` — модель данных; `prisma/seed.ts` + `prisma/seed-data/*` — начальные данные из документов клиники (`TODO(клиника)` — что уточнить).
+- `lib/db.ts` — синглтон PrismaClient; `lib/data/*` — серверные функции чтения с `'use cache'` + `cacheTag`.
+- `components/layout/*` — Header/Footer; данные берут из БД.
+- На сайте нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9).
 
 Нестандартные настройки в [next.config.ts](next.config.ts):
 - `cacheComponents: true` и `partialPrefetching: true` — применяются семантика Cache Components / частичного предварительного рендеринга, поэтому доступ к динамическим данным (например, API запросов, некэшируемые fetch) должен обрабатываться в соответствии с актуальной документацией (границы Suspense / `use cache`), иначе сборка завершится ошибкой.
