@@ -10,7 +10,8 @@ npm run build   # next build
 npm run start   # next start (после сборки)
 npm run lint    # eslint (flat конфиг в eslint.config.mjs)
 
-npm run db:up       # docker compose up -d postgres
+npm run db:up       # docker compose up -d postgres (только БД для разработки)
+docker compose up -d --build   # весь стек в Docker, см. DEPLOYMENT.md
 npm run db:migrate  # prisma migrate dev
 npm run db:seed     # prisma db seed — ПЕРЕЗАПИСЫВАЕТ контентные таблицы
 npm run db:studio   # prisma studio
@@ -30,7 +31,8 @@ npm run import:legacy -- path/to/database.db  # перенос прайса из
 App Router, строгий TypeScript, псевдоним `@/*` → корень репозитория. Стек и подходы — [spec.md](spec.md), план переработки сайта — [refactor-plan.md](refactor-plan.md).
 
 - `prisma/schema.prisma` — модель данных; `prisma/seed.ts` + `prisma/seed-data/*` — начальные данные из документов клиники (`TODO(клиника)` — что уточнить).
-- `lib/db.ts` — синглтон PrismaClient; `lib/data/*` — серверные функции чтения с `'use cache'` + `cacheTag`.
+- `lib/db.ts` — `getDb()`, ленивый синглтон PrismaClient; `lib/data/*` — серверные функции чтения: `await connection()` снаружи, `'use cache'` + `cacheTag` внутри, вызывающие компоненты — в `<Suspense>`. Сборка не должна обращаться к БД (Docker-образ собирается без неё).
+- Деплой: `Dockerfile` + `docker-compose.yml` (postgres → migrate → app → caddy), инструкция — [DEPLOYMENT.md](DEPLOYMENT.md).
 - `components/layout/*` — Header/Footer; данные берут из БД.
 - На сайте нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9).
 

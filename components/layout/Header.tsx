@@ -1,12 +1,24 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { getClinics } from "@/lib/data/site";
 import { formatPhone } from "@/lib/format";
 import { mainNav } from "./nav";
 
-export async function Header() {
+// Каркас шапки статичен и попадает в пререндер; телефон берётся из БД
+// во время запроса и подставляется через Suspense.
+async function MainPhone({ className }: { className: string }) {
   const clinics = await getClinics();
   const phone = clinics.flatMap((c) => c.phones)[0];
+  if (!phone) return null;
 
+  return (
+    <a href={`tel:${phone.number}`} className={className}>
+      {formatPhone(phone.number)}
+    </a>
+  );
+}
+
+export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-6">
@@ -28,14 +40,9 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {phone && (
-            <a
-              href={`tel:${phone.number}`}
-              className="hidden font-semibold whitespace-nowrap hover:text-brand sm:block"
-            >
-              {formatPhone(phone.number)}
-            </a>
-          )}
+          <Suspense>
+            <MainPhone className="hidden font-semibold whitespace-nowrap hover:text-brand sm:block" />
+          </Suspense>
 
           {/* Мобильное меню на <details> — работает без JavaScript. */}
           <details className="group relative xl:hidden">
@@ -65,16 +72,11 @@ export async function Header() {
                     </Link>
                   </li>
                 ))}
-                {phone && (
-                  <li className="mt-1 border-t border-line pt-1">
-                    <a
-                      href={`tel:${phone.number}`}
-                      className="block rounded-lg px-3 py-2 font-semibold"
-                    >
-                      {formatPhone(phone.number)}
-                    </a>
-                  </li>
-                )}
+                <li className="mt-1 border-t border-line pt-1 empty:hidden">
+                  <Suspense>
+                    <MainPhone className="block rounded-lg px-3 py-2 font-semibold" />
+                  </Suspense>
+                </li>
               </ul>
             </nav>
           </details>

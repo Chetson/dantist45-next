@@ -30,9 +30,14 @@
 
 - Конфигурация CLI — `prisma.config.ts` (путь к схеме, миграциям, seed, `DATABASE_URL`).
 - Клиент генерируется в `generated/prisma` (не коммитится, `postinstall` → `prisma generate`), импорт — `@/generated/prisma/client`.
-- Подключение через драйвер-адаптер `@prisma/adapter-pg`; синглтон — `lib/db.ts` (только сервер, `server-only`).
+- Подключение через драйвер-адаптер `@prisma/adapter-pg`; синглтон создаётся лениво — `getDb()` из `lib/db.ts` (только сервер, `server-only`).
 - `prisma migrate dev` не запускает seed и generate автоматически — `npm run db:seed` отдельно.
-- `next build` пререндерит страницы с `'use cache'` и обращается к БД: на момент сборки база должна быть доступна, миграции и seed применены.
+- Сборка не обращается к БД. Функции чтения в `lib/data/*`: публичная функция вызывает `await connection()`, запрос к БД — во внутренней функции с `'use cache'` + `cacheTag`. Компоненты, которые их используют, оборачиваются в `<Suspense>`; статичный каркас страницы пререндерится, данные подставляются при запросе.
+
+## Деплой
+
+- `Dockerfile`: цели `runner` (Next.js `output: "standalone"`) и `migrator` (`prisma migrate deploy` + `seed --if-empty`).
+- `docker-compose.yml`: `postgres` → `migrate` → `app` (+ `caddy` с HTTPS по профилю `proxy`). Подробно — [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Клиентское состояние: TanStack Query
 

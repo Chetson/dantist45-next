@@ -3,9 +3,8 @@ import { getClinics, getOrganization, getRegulators } from "@/lib/data/site";
 import { formatPhone } from "@/lib/format";
 import { mainNav } from "./nav";
 
+// Футер целиком зависит от данных БД, поэтому в layout обёрнут в <Suspense>.
 export async function Footer() {
-  // Кэшируем весь футер: иначе new Date() (год в копирайте) делает его динамическим.
-  "use cache";
   const [organization, clinics, regulators] = await Promise.all([
     getOrganization(),
     getClinics(),

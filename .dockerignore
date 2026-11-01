@@ -1,0 +1,20 @@
+.git
+.github
+.idea
+.vscode
+.claude
+.next
+node_modules
+generated
+npm-debug.log*
+.DS_Store
+
+# Секреты не попадают в образ — переменные передаёт docker compose.
+.env
+.env.*
+!.env.example
+
+Dockerfile
+docker-compose*.yml
+Caddyfile
+*.md

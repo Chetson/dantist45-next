@@ -1,6 +1,6 @@
 // Наполнение БД начальными данными: `npx prisma db seed`.
-// ВНИМАНИЕ: seed полностью перезаписывает контентные таблицы.
-// Запускать на свежей БД, а не на боевой после правок из админки.
+// ВНИМАНИЕ: без флага --if-empty seed полностью перезаписывает контентные
+// таблицы. Запускать на свежей БД, а не на боевой после правок из админки.
 
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -28,6 +28,13 @@ const prisma = new PrismaClient({
 const toDate = (iso?: string) => (iso ? new Date(`${iso}T00:00:00Z`) : null);
 
 async function main() {
+  // --if-empty: используется контейнером migrate при каждом запуске стека —
+  // наполняет только новую БД и не трогает данные, которые уже есть.
+  if (process.argv.includes("--if-empty") && (await prisma.organization.count()) > 0) {
+    console.log("Seed пропущен: в БД уже есть данные.");
+    return;
+  }
+
   await prisma.$transaction(async (tx) => {
     // Порядок важен из-за внешних ключей.
     await tx.announcement.deleteMany();

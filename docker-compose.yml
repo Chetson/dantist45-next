@@ -1,14 +1,28 @@
+# Полный стек сайта: PostgreSQL → миграции/seed → Next.js (+ Caddy по профилю).
+#
+#   docker compose up -d --build               — сайт на http://127.0.0.1:${APP_PORT}
+#   docker compose --profile proxy up -d --build — плюс Caddy с HTTPS для ${DOMAIN}
+#   docker compose up -d postgres              — только БД для локальной разработки
+#
+# Все параметры — в .env (шаблон: .env.example). Инструкция — DEPLOYMENT.md.
+
+name: dantist45
+
+x-database-url: &database-url
+  DATABASE_URL: postgresql://${POSTGRES_USER:-dantist}:${POSTGRES_PASSWORD:-dantist}@postgres:5432/${POSTGRES_DB:-dantist45}?schema=public
+
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: dantist45-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-dantist}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dantist}
       POSTGRES_DB: ${POSTGRES_DB:-dantist45}
+    # Только localhost: снаружи БД недоступна, но к ней можно подключиться
+    # с этой машины (npm run dev, prisma studio, pgAdmin через SSH-туннель).
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -17,5 +31,60 @@ services:
       timeout: 5s
       retries: 10
 
+  # Одноразовый контейнер: применяет миграции и наполняет пустую БД.
+  migrate:
+    build:
+      context: .
+      target: migrator
+    image: dantist45-migrator
+    environment:
+      <<: *database-url
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      target: runner
+    image: dantist45-app
+    restart: unless-stopped
+    environment:
+      <<: *database-url
+    ports:
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  # Обратный прокси с автоматическим HTTPS (Let's Encrypt).
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["proxy"]
+    restart: unless-stopped
+    environment:
+      # localhost — для проверки на своей машине (самоподписанный сертификат).
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
 volumes:
   postgres-data:
+  caddy-data:
+  caddy-config:
