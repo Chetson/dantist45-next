@@ -3,9 +3,12 @@ import { ArrowLeft } from "lucide-react";
 import { buttonClass } from "@/components/ui/button";
 import { ToothIcon } from "@/components/ui/icons";
 import { mainNav } from "@/components/layout/nav";
+import { SiteShell } from "@/components/layout/SiteShell";
 
+// Корневая 404 рендерится вне группы (site), поэтому оболочку сайта добавляем сами.
 export default function NotFound() {
   return (
+    <SiteShell>
     <section className="container-page flex flex-col items-center py-24 text-center">
       <span className="flex size-20 items-center justify-center rounded-full bg-brand text-white glow">
         <ToothIcon className="size-10" />
@@ -32,5 +35,6 @@ export default function NotFound() {
         На главную
       </Link>
     </section>
+    </SiteShell>
   );
 }

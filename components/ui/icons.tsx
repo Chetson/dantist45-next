@@ -36,6 +36,9 @@ const categoryIcons: Record<string, LucideIcon | typeof ToothIcon> = {
   gift: Gift,
 };
 
+/** Имена иконок разделов услуг (поле ServiceCategory.icon). */
+export const categoryIconNames = Object.keys(categoryIcons);
+
 export function CategoryIcon({ name, className }: { name: string | null; className?: string }) {
   const Icon = (name && categoryIcons[name]) || ToothIcon;
   return <Icon className={className} aria-hidden="true" />;

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Manrope, Raleway } from "next/font/google";
-import { Suspense } from "react";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -34,7 +31,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children, subnav }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="ru"
@@ -48,19 +45,7 @@ export default function RootLayout({ children, subnav }: LayoutProps<"/">) {
           <div className="absolute top-1/3 -right-48 size-[36rem] rounded-full bg-accent-soft blur-3xl" />
           <div className="absolute -bottom-40 left-1/4 size-[34rem] rounded-full bg-brand-soft/70 blur-3xl" />
         </div>
-        <a
-          href="#content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:text-white"
-        >
-          Перейти к содержимому
-        </a>
-        <Header subnav={subnav} />
-        <main id="content" className="flex-1">
-          {children}
-        </main>
-        <Suspense>
-          <Footer />
-        </Suspense>
+        {children}
       </body>
     </html>
   );

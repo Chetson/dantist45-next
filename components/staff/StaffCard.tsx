@@ -4,9 +4,15 @@ import type { StaffListItem } from "@/lib/data/content";
 import { DoctorPortrait } from "@/components/ui/illustrations";
 import { fullName } from "@/lib/format";
 
-export function StaffAvatar({ className = "size-28" }: { className?: string }) {
-  // Фото сотрудников появятся после получения согласий — пока условный портрет.
-  return <DoctorPortrait className={`shrink-0 rounded-full shadow-lg shadow-accent-strong/30 ${className}`} />;
+export function StaffAvatar({ photo, className = "size-28" }: { photo?: string | null; className?: string }) {
+  const classes = `shrink-0 rounded-full shadow-lg shadow-accent-strong/30 ${className}`;
+  // Фото загружается в админке только при письменном согласии сотрудника,
+  // без него — условный портрет.
+  if (photo) {
+    // eslint-disable-next-line @next/next/no-img-element -- файл из /uploads, уже сжат и кэшируется навсегда
+    return <img src={photo} alt="" loading="lazy" className={`aspect-square object-cover ${classes}`} />;
+  }
+  return <DoctorPortrait className={classes} />;
 }
 
 /**
@@ -20,7 +26,7 @@ export function StaffCard({ person }: { person: StaffListItem }) {
       <span className="absolute top-5 right-5 text-muted transition-colors group-hover:text-brand sm:top-6 sm:right-6">
         <ArrowUpRight className="size-5" aria-hidden="true" />
       </span>
-      <StaffAvatar className="size-16 sm:size-28" />
+      <StaffAvatar photo={person.photo} className="size-16 sm:size-28" />
       <div className="flex min-w-0 flex-1 flex-col pr-6 sm:w-full sm:pr-0">
         <h3 className="type-h4 text-balance text-brand-deep sm:mt-6">
           <Link href={`/specialists/${person.slug}`} className="after:absolute after:inset-0">

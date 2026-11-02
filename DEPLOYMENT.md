@@ -38,6 +38,9 @@ cp .env.example .env
 | `APP_PORT` | `3000` | Порт сайта на хосте |
 | `APP_BIND` | `127.0.0.1` | `127.0.0.1` — сайт виден только локально и через Caddy; `0.0.0.0` — открыть порт наружу без прокси |
 | `DOMAIN` | `localhost` | Домен для Caddy, например `dantist45.ru`; `www.` перенаправляется на него |
+| `BETTER_AUTH_SECRET` | — | Секрет сессий админки: `openssl rand -base64 32`. **Обязателен**, без него вход в `/admin` не работает. При смене все пользователи выйдут |
+| `BETTER_AUTH_URL` | `http://localhost:3000` | Адрес, с которого открывают админку; на сервере — как `SITE_URL` |
+| `UPLOAD_DIR` | `./uploads` | Каталог фото из админки при `npm run dev`. В Docker — всегда `/app/uploads` (том `uploads-data`) |
 
 Сгенерировать пароль: `openssl rand -hex 24`.
 
@@ -51,7 +54,8 @@ cp .env.example .env
 npm run db:up        # только PostgreSQL в Docker
 npm run db:migrate   # применить миграции
 npm run db:seed      # начальные данные (перезаписывает контент!)
-npm run dev          # http://localhost:3000
+npm run admin:create -- admin@example.ru "Имя"   # первый администратор
+npm run dev          # http://localhost:3000, админка — /admin
 ```
 
 После изменения `prisma/schema.prisma`: `npm run db:migrate -- --name описание_изменения` — создаст миграцию в `prisma/migrations/`, её нужно закоммитить.
@@ -86,7 +90,8 @@ DOMAIN=localhost docker compose --profile proxy up -d --build
 4. Настроить окружение:
    ```bash
    cp .env.example .env
-   nano .env   # POSTGRES_PASSWORD, DATABASE_URL (тот же пароль), DOMAIN
+   nano .env   # POSTGRES_PASSWORD, DATABASE_URL (тот же пароль), DOMAIN,
+               # BETTER_AUTH_SECRET (openssl rand -base64 32), BETTER_AUTH_URL=https://<домен>
    ```
 5. Направить домен (A-запись `@` и `www`) на IP сервера и дождаться, пока DNS обновится (`dig +short dantist45.ru`).
 6. Запустить:
@@ -98,6 +103,12 @@ DOMAIN=localhost docker compose --profile proxy up -d --build
    docker compose --profile proxy ps   # app — healthy, migrate — Exited (0)
    curl https://dantist45.ru/api/health  # {"status":"ok"}
    ```
+
+8. Создать первого администратора админки (пароль выведется один раз):
+   ```bash
+   docker compose run --rm migrate npx tsx scripts/create-admin.ts admin@dantist45.ru "Имя Фамилия"
+   ```
+   Остальных пользователей администратор заводит сам в `/admin/users`. Тот же скрипт сбрасывает пароль, если администратор его забыл.
 
 Caddy сам получает и продлевает сертификат. Если сертификат не выдаётся — смотрите `docker compose logs caddy`: обычно DNS ещё не обновился или закрыт порт 80.
 
@@ -155,11 +166,20 @@ docker compose restart app
 
 ### Кэш данных
 
-Сайт кэширует данные из БД в памяти. Изменения через будущую админку будут сбрасывать кэш автоматически. После ручных правок в БД (Prisma Studio, SQL, восстановление бэкапа) выполните `docker compose restart app`.
+Сайт кэширует данные из БД в памяти. Изменения через админку сбрасывают кэш автоматически. После ручных правок в БД (Prisma Studio, SQL, восстановление бэкапа) выполните `docker compose restart app`.
 
 ### Файлы
 
-Сканы лицензий и прочие файлы из `public/` встроены в образ — после их изменения нужен `git pull` и пересборка. Загрузка файлов из админки (этап 2) будет хранить их в отдельном томе.
+Сканы лицензий и прочие файлы из `public/` встроены в образ — после их изменения нужен `git pull` и пересборка. Фото сотрудников, загруженные в админке, лежат в томе `uploads-data` (`/app/uploads` в контейнере) и отдаются по адресу `/uploads/...`. Том не входит в `pg_dump` — бэкапьте его отдельно:
+
+```bash
+docker run --rm -v dantist45_uploads-data:/data -v /opt/backups:/backup alpine \
+  tar czf /backup/uploads-$(date +%F).tgz -C /data .
+```
+
+### Админка
+
+`/admin` — правка сотрудников, прайса и статей, уведомлений на главной; для администраторов — ещё и пользователей админки. Вход по email и паролю (библиотека Better Auth, сессии в таблицах `user`/`session`/`account` этой же БД), регистрации нет. Роли: «Администратор» — всё, «Редактор» — только контент. Вход ограничен 5 попытками в минуту с одного IP.
 
 ## 9. Полезные команды
 
@@ -176,4 +196,4 @@ docker compose exec postgres psql -U dantist dantist45   # консоль БД
 
 ## 10. Персональные данные
 
-Сайт не собирает данные посетителей: на нём нет форм, счётчиков и сторонних виджетов, шрифты раздаются с собственного домена. Не подключайте аналитику и встраиваемые карты без согласования (см. `refactor-plan.md`, раздел 9).
+Сайт не собирает данные посетителей: на публичных страницах нет форм, счётчиков и сторонних виджетов (формы есть только в закрытой админке для сотрудников клиники), шрифты раздаются с собственного домена. Не подключайте аналитику и встраиваемые карты без согласования (см. `refactor-plan.md`, раздел 9).

@@ -16,6 +16,7 @@ npm run db:migrate  # prisma migrate dev
 npm run db:seed     # prisma db seed — ПЕРЕЗАПИСЫВАЕТ контентные таблицы
 npm run db:studio   # prisma studio
 npm run import:legacy -- path/to/database.db  # перенос прайса из SQLite старого сайта
+npm run admin:create -- email "Имя"  # создать администратора /admin или сбросить ему пароль
 ```
 
 Первый запуск: `cp .env.example .env`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed`, `npm run dev`.
@@ -33,13 +34,15 @@ App Router, строгий TypeScript, псевдоним `@/*` → корень
 - `prisma/schema.prisma` — модель данных; `prisma/seed.ts` + `prisma/seed-data/*` — начальные данные из документов клиники (`TODO(клиника)` — что уточнить).
 - `lib/db.ts` — `getDb()`, ленивый синглтон PrismaClient; `lib/data/*` — серверные функции чтения: `await connection()` снаружи, `'use cache'` + `cacheTag` внутри, вызывающие компоненты — в `<Suspense>`. Сборка не должна обращаться к БД (Docker-образ собирается без неё).
 - Деплой: `Dockerfile` + `docker-compose.yml` (postgres → migrate → app → caddy), инструкция — [DEPLOYMENT.md](DEPLOYMENT.md).
+- Маршруты: публичный сайт — группа `app/(site)/*` (её layout — `SiteShell`: шапка, футер, слот `@subnav`), корневой `app/layout.tsx` — только `<html>/<body>`, шрифты и фон. Админка — `app/admin/*`: `login` открыт, `(panel)/*` за входом.
+- Админка: авторизация — Better Auth (`lib/auth.ts`, ленивый `getAuth()`; роли `admin`/`editor` в `lib/auth-permissions.ts`; регистрация выключена, первый админ — `npm run admin:create`). `proxy.ts` лишь отсекает запросы без cookie; настоящая проверка — `requireUser()`/`requireAdmin()` из `lib/admin/session.ts` в **каждой** странице и **каждом** Server Action. Данные админки читаются из Prisma напрямую, без `'use cache'`; мутации — Server Actions в `app/admin/(panel)/<раздел>/actions.ts`: zod-разбор (`lib/admin/form.ts`) → Prisma → `updateTag(TAGS.x)`. Формы — `ActionForm`/`Field`/`SubmitButton` из `components/admin/form.tsx`. Фото — `lib/uploads.ts` → `UPLOAD_DIR`, раздаются `app/uploads/[...path]/route.ts`.
 - `components/layout/*` — Header/Footer; `components/ui/*` — общие элементы (`buttonClass`, `SectionHeading`, `PageHeader`, `Markdown`, иконки); `components/{home,services,staff,clinics}/*` — блоки страниц.
 - Дизайн — по макету «Dental Clinic» (Behance, rs-dent): светлый холодный фон, лавандовый акцент (`brand`), небесно-голубые градиентные панели (`bg-sky-panel`), «стеклянные» карточки (`card`, `card-glass`), свечение (`glow`), крупные строчные заголовки (`heading-xl`, Manrope 800), текст — Raleway. Токены и утилиты — в `app/globals.css`; только Tailwind, без CSS-модулей. Имена людей и названия статей в заголовках не переводятся в строчные (`PageHeader keepCase`).
 - Сетка и типографика — утилиты в `app/globals.css`: `container-page` (80rem), 12 колонок `grid-cols-12` с промежутком `gap-4 sm:gap-6` везде (тогда сетки на 2/3/4 колонки совпадают с 12-колоночной), `section-y`, `panel-pad`, `card-pad`, `card-pad-sm`; шкала заголовков `type-display` → `type-h1` → `type-h2` → `type-h3` → `type-h4`, плюс `type-lead`, `type-eyebrow`. Не задавайте размеры шрифтов и отступы карточек вручную. Внешние края всех блоков (карточек, панелей, шапки, футера) лежат на краях контейнера.
 - После правки `app/globals.css` перезапускайте `npm run dev`: загрузчик `@tailwindcss/turbopack` не пересобирает стили по горячей перезагрузке (классы в компонентах подхватываются без перезапуска).
 - Шапка: `components/layout/Header.tsx` + клиентская `StickyHeader.tsx` (анимация по `data-scrolled`). Вторая строка шапки для конкретной страницы — параллельный маршрут `app/@subnav/*` (сейчас только `/services`, компонент `SubnavLinks` с подсветкой текущего раздела); `@subnav/[...catchAll]`, `@subnav/page.tsx` и `default.tsx` возвращают `null`. При добавлении нового слота перезапускайте `npm run dev`.
 - Страницы `[slug]` читают `params` внутри `<Suspense>` (без `generateStaticParams` — сборка без БД).
-- На сайте нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9).
+- На публичных страницах нет форм и сторонних трекеров (требование по 152-ФЗ, см. refactor-plan.md, раздел 9). Формы допустимы только в админке `/admin` (закрыта входом, `noindex`).
 
 Нестандартные настройки в [next.config.ts](next.config.ts):
 - `cacheComponents: true` и `partialPrefetching: true` — применяются семантика Cache Components / частичного предварительного рендеринга, поэтому доступ к динамическим данным (например, API запросов, некэшируемые fetch) должен обрабатываться в соответствии с актуальной документацией (границы Suspense / `use cache`), иначе сборка завершится ошибкой.

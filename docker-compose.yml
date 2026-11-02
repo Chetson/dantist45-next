@@ -53,6 +53,12 @@ services:
     environment:
       <<: *database-url
       SITE_URL: ${SITE_URL:-https://dantist45.ru}
+      # Админка: без секрета вход в /admin не работает.
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://dantist45.ru}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads-data:/app/uploads
     ports:
       - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}:3000"
     depends_on:
@@ -87,5 +93,7 @@ services:
 
 volumes:
   postgres-data:
+  # Фото, загруженные через админку
+  uploads-data:
   caddy-data:
   caddy-config:
