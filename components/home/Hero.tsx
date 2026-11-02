@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Phone, Plus } from "lucide-react";
 import { Suspense } from "react";
 import { buttonClass, iconCircle } from "@/components/ui/button";
-import { InstrumentsIllustration, ToothIllustration } from "@/components/ui/illustrations";
+import { ToothIllustration } from "@/components/ui/illustrations";
 import { Scene3D } from "@/components/ui/Scene3D";
 import { getStaff } from "@/lib/data/content";
 import { getClinics } from "@/lib/data/site";
@@ -72,9 +72,8 @@ export function Hero() {
           <Scene3D
             model="tooth"
             fallback={<ToothIllustration className="size-full" />}
-            className="absolute hidden lg:right-[27%] lg:block lg:-bottom-6 lg:h-[26rem] lg:w-[20rem]"
+            className="absolute hidden lg:right-[17%] lg:block lg:-bottom-10 lg:h-[28rem] lg:w-[24rem]"
           />
-          <InstrumentsIllustration className="absolute -bottom-6 left-[46%] hidden w-44 opacity-80 xl:block" />
         </div>
 
         <div className="panel-pad relative grid grid-cols-12 gap-x-6 gap-y-10">

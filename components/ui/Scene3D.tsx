@@ -170,54 +170,61 @@ function centered(T: Three, group: THREE.Group, height: number) {
   return group;
 }
 
-/** Зуб: жевательная коронка с буграми и два корня, глянцевая эмаль. */
+/**
+ * Зуб: контур фирменной иконки (ToothIcon), выдавленный в объём со скруглённой
+ * фаской и глянцевой эмалью. Пропорции совпадают с логотипом сайта.
+ */
 function buildTooth(T: Three, track: Track) {
+  // Контур в координатах иконки 24×24 (y вниз), центрирован и перевёрнут по y.
+  const P = (x: number, y: number) => new T.Vector2(x - 12, 12 - y);
+  const c: [number, number][][] = [
+    [[5, 3], [3, 5], [3, 8]],
+    [[3, 10.5], [4, 12], [4.6, 14.2]],
+    [[5.2, 16.5], [5.5, 21], [7.5, 21]],
+    [[9.3, 21], [9.5, 17.6], [10.1, 15.7]],
+    [[10.4, 14.8], [11, 14.5], [12, 14.5]],
+    [[13, 14.5], [13.6, 14.8], [13.9, 15.7]],
+    [[14.5, 17.6], [14.7, 21], [16.5, 21]],
+    [[18.5, 21], [18.8, 16.5], [19.4, 14.2]],
+    [[20, 12], [21, 10.5], [21, 8]],
+    [[21, 5], [19, 3], [16.5, 3]],
+    [[14.6, 3], [13.5, 4], [12, 4]],
+    [[10.5, 4], [9.4, 3], [7.5, 3]],
+  ];
+  const shape = new T.Shape();
+  const start = P(7.5, 3);
+  shape.moveTo(start.x, start.y);
+  for (const [a, b, e] of c) {
+    const A = P(...a);
+    const B = P(...b);
+    const E = P(...e);
+    shape.bezierCurveTo(A.x, A.y, B.x, B.y, E.x, E.y);
+  }
+
+  const geo = track(
+    new T.ExtrudeGeometry(shape, {
+      depth: 3,
+      curveSegments: 48,
+      bevelEnabled: true,
+      bevelThickness: 2.2,
+      bevelSize: 1.4,
+      bevelOffset: -1.2,
+      bevelSegments: 16,
+    }),
+  );
+  geo.computeVertexNormals();
   const enamel = track(
     new T.MeshPhysicalMaterial({
-      color: 0xf4f8ff,
-      roughness: 0.22,
+      color: 0xf6f9ff,
+      roughness: 0.2,
       clearcoat: 1,
-      clearcoatRoughness: 0.12,
-      sheen: 0.4,
+      clearcoatRoughness: 0.1,
+      sheen: 0.5,
       sheenColor: new T.Color(0xcfe0ff),
     }),
   );
-  const root = track(
-    new T.MeshPhysicalMaterial({ color: 0xe6edf8, roughness: 0.4, clearcoat: 0.5, clearcoatRoughness: 0.3 }),
-  );
-
-  const crownGeo = track(new T.SphereGeometry(1, 96, 96));
-  const pos = crownGeo.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    let x = pos.getX(i) * 1.08;
-    let y = pos.getY(i);
-    let z = pos.getZ(i) * 1.0;
-    const top = Math.max(0, y);
-    y += top * 0.3 * Math.cos(x * 3.4) * Math.cos(z * 3.6); // бугры
-    y *= 0.95;
-    x *= 1 + 0.08 * Math.max(0, -y); // слегка сужается книзу
-    z *= 1 + 0.06 * Math.max(0, -y);
-    pos.setXYZ(i, x, y, z);
-  }
-  crownGeo.computeVertexNormals();
-  const crown = new T.Mesh(crownGeo, enamel);
-
-  const profile: THREE.Vector2[] = [];
-  for (let i = 0; i <= 24; i++) {
-    const k = i / 24;
-    const r = 0.42 * Math.pow(1 - k, 0.8) + 0.04 * Math.sin(k * Math.PI);
-    profile.push(new T.Vector2(Math.max(r, 0.001), -k * 1.5));
-  }
-  const rootGeo = track(new T.LatheGeometry(profile, 40));
-  const rootL = new T.Mesh(rootGeo, root);
-  rootL.position.set(-0.52, -0.62, 0);
-  rootL.rotation.z = -0.09;
-  const rootR = rootL.clone();
-  rootR.position.x = 0.52;
-  rootR.rotation.z = 0.09;
-
   const group = new T.Group();
-  group.add(crown, rootL, rootR);
+  group.add(new T.Mesh(geo, enamel));
   return centered(T, group, 3.4);
 }
 
