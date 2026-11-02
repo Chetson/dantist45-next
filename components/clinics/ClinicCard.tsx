@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock, MapPin, Phone } from "lucide-react";
 import { iconCircle } from "@/components/ui/button";
+import { MapCanvas } from "@/components/ui/MapCanvas";
 import type { getClinics } from "@/lib/data/site";
 import { mapLinks } from "@/lib/data/site";
 import { formatPhone, plural } from "@/lib/format";
@@ -32,6 +33,7 @@ export function ClinicCard({ clinic }: { clinic: Clinic }) {
 
   return (
     <article className="flex h-full flex-col gap-5">
+      <MapCanvas seed={clinic.slug} className="h-28 w-full rounded-[var(--radius-panel)] shadow-lg shadow-accent-strong/20 sm:h-36" />
       <div>
         <h3 className="type-h3 text-brand-deep lowercase sm:text-[2rem]">
           <Link href={`/clinics/${clinic.slug}`} className="hover:text-brand">

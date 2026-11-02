@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { ArrowUpRight, Check, FileText, Heart, Landmark, ShieldCheck, Users } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, SVGProps } from "react";
 import { ClinicCard } from "@/components/clinics/ClinicCard";
 import { StaffCard } from "@/components/staff/StaffCard";
 import { buttonClass, iconCircle } from "@/components/ui/button";
 import { CategoryIcon, ToothIcon } from "@/components/ui/icons";
+import { Scene3D } from "@/components/ui/Scene3D";
+import { DiplomaIllustration, InstrumentsIllustration, ReceiptIllustration } from "@/components/ui/illustrations";
 import { SectionHeading, headingGap } from "@/components/ui/SectionHeading";
 import { getHomeDoctors, getServiceCatalog } from "@/lib/data/content";
 import { getClinics } from "@/lib/data/site";
@@ -74,9 +76,10 @@ export function ServicesSection({ children }: { children: ReactNode }) {
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="bg-sky-panel card-pad col-span-12 rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30 lg:col-span-4">
+        <div className="bg-sky-panel card-pad relative col-span-12 overflow-hidden rounded-[var(--radius-panel)] text-white shadow-lg shadow-accent-strong/30 lg:col-span-4">
+          <InstrumentsIllustration aria-hidden="true" className="pointer-events-none absolute -right-6 -bottom-8 w-40 opacity-90" />
           <ToothIcon className="size-7" />
-          <p className="type-h3 mt-6 text-balance">
+          <p className="type-h3 relative mt-6 max-w-[14rem] text-balance">
             заботимся о здоровье зубов жителей Кургана с 2003 года
           </p>
         </div>
@@ -87,18 +90,29 @@ export function ServicesSection({ children }: { children: ReactNode }) {
 
 // ─── Почему выбирают нас ───────────────────────────────────────────────
 
-const reasons = [
+const reasons: {
+  title: string;
+  text: string;
+  illustration?: (props: SVGProps<SVGSVGElement>) => ReactNode;
+  illustrationClass?: string;
+  scene?: "bottle";
+}[] = [
   {
+    scene: "bottle" as const,
     title: "все направления в одной клинике",
     text: "Терапевт, хирург и ортопед работают вместе: консультация, лечение, удаление и протезирование — без поиска других клиник.",
   },
   {
     title: "открытые цены",
     text: "Прайс опубликован на сайте. План лечения и его стоимость обсуждаются с пациентом до начала работ.",
+    illustration: ReceiptIllustration,
+    illustrationClass: "top-4 right-4 rotate-6 sm:top-0 sm:right-8 lg:-top-2 lg:right-10",
   },
   {
     title: "специалисты с подтверждённой квалификацией",
     text: "Сведения об образовании, повышении квалификации и аккредитации каждого специалиста — на сайте.",
+    illustration: DiplomaIllustration,
+    illustrationClass: "top-4 right-2 sm:top-2 sm:right-6 lg:top-4 lg:right-6 lg:w-60",
   },
   {
     title: "всё по закону",
@@ -113,25 +127,39 @@ export function WhyUs() {
         <ToothIcon aria-hidden="true" className="pointer-events-none absolute -top-20 -right-20 size-[30rem] stroke-[0.5] text-white/20" />
         <div className="relative">
           <SectionHeading inverted title="почему пациенты выбирают нас" />
-          <ol className={`${headingGap} grid gap-4 sm:gap-6 md:grid-cols-2`}>
+          <ol className={`${headingGap} grid grid-cols-12 gap-4 sm:gap-6`}>
             {reasons.map((reason, i) => {
               const solid = i === 0 || i === 3;
+              const Illustration = reason.illustration;
               return (
                 <li
                   key={reason.title}
-                  className={`card-pad flex flex-col sm:min-h-72 ${solid ? "card text-foreground" : "card-glass text-white"}`}
+                  className={`relative col-span-12 flex flex-col overflow-hidden card-pad sm:min-h-72 md:col-span-6 ${
+                    i === 1 || i === 2 ? "lg:col-span-7" : "lg:col-span-5"
+                  } ${solid ? "card text-foreground" : "card-glass text-white"}`}
                 >
-                  <span className={`text-sm leading-6 font-semibold ${solid ? "text-muted" : "text-white/80"}`}>
+                  {reason.scene && (
+                    <Scene3D
+                      model={reason.scene}
+                      className="absolute top-2 right-2 h-40 w-24 sm:h-56 sm:w-32 lg:top-4 lg:right-8 lg:h-64 lg:w-36"
+                    />
+                  )}
+                  {Illustration && (
+                    <Illustration
+                      className={`pointer-events-none absolute w-24 sm:w-36 lg:w-48 ${reason.illustrationClass}`}
+                    />
+                  )}
+                  <span className={`relative text-sm leading-6 font-semibold ${solid ? "text-muted" : "text-white/80"}`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3
-                    className={`type-h3 mt-auto pt-6 text-balance sm:pt-10 ${
+                    className={`type-h3 relative mt-auto pt-28 text-balance sm:pt-10 lg:max-w-[16rem] ${
                       solid ? "text-brand-deep" : "text-white"
                     }`}
                   >
                     {reason.title}
                   </h3>
-                  <p className={`mt-3 max-w-md ${solid ? "text-foreground/80" : "text-white/90"}`}>
+                  <p className={`relative mt-3 max-w-md lg:max-w-[18rem] ${solid ? "text-foreground/80" : "text-white/90"}`}>
                     {reason.text}
                   </p>
                 </li>
@@ -344,15 +372,16 @@ export function CallToAction({ children }: { children: ReactNode }) {
     <section className="container-page">
       <div className="bg-sky-panel panel-pad relative overflow-hidden rounded-[2.5rem] text-white">
         <ToothIcon aria-hidden="true" className="pointer-events-none absolute -right-10 -bottom-24 size-[26rem] stroke-[0.5] text-white/25" />
+        <Scene3D model="binder" className="absolute -top-6 right-[3%] hidden h-[26rem] w-72 xl:block" />
         <div className="relative grid grid-cols-12 items-center gap-x-6 gap-y-10">
-          <div className="col-span-12 lg:col-span-7">
+          <div className="col-span-12 lg:col-span-7 xl:col-span-6">
             <h2 className="type-h2 text-balance">начните путь к здоровой улыбке с консультации</h2>
             <p className="type-lead mt-6 max-w-xl text-white/90">
               Врач проведёт <strong className="font-bold">осмотр</strong>, при необходимости назначит снимок и
               предложит <strong className="font-bold">план лечения</strong> с ориентировочной стоимостью.
             </p>
           </div>
-          <div className="col-span-12 lg:col-span-4 lg:col-start-9">{children}</div>
+          <div className="col-span-12 lg:col-span-4 lg:col-start-9 xl:col-span-3 xl:col-start-7">{children}</div>
         </div>
       </div>
     </section>

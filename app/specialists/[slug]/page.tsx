@@ -46,7 +46,7 @@ async function Profile({ slug }: { slug: string }) {
       />
       <div className="container-page grid grid-cols-12 gap-x-6 gap-y-10 *:col-span-12 *:min-w-0 lg:[&>*:first-child]:col-span-4 lg:[&>*:last-child]:col-span-8">
         <aside className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-6 lg:sticky lg:top-28 lg:grid-cols-1 lg:self-start">
-          <StaffAvatar person={person} className="aspect-square w-32 text-4xl sm:w-44 sm:text-5xl lg:w-full lg:max-w-72 lg:text-7xl" />
+          <StaffAvatar className="aspect-square w-32 sm:w-44 lg:w-full lg:max-w-72" />
           <ul className="space-y-3">
             {person.clinics.map(({ clinic, position }) => (
               <li key={clinic.slug} className="card card-pad-sm rounded-[1.75rem]">
